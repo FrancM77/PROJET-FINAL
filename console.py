@@ -43,19 +43,19 @@ def menu():
         ecran.blit(fond_ecran, (0, 0))
         
         if survol_demarrer:
-            ecran.blit(pygame.transform.scale(bouton_demarrer_image, (bouton_demarrer_image.get_width() + 10, bouton_demarrer_image.get_height() + 10)), (290, 190))
+            ecran.blit(pygame.transform.scale(bouton_demarrer_image, (bouton_demarrer_image.get_width() + 15, bouton_demarrer_image.get_height() + 15)), (295, 195))
         else:
             pygame.time.wait(20)
             ecran.blit(bouton_demarrer_image, (300, 200))
 
         if survol_regle:
-            ecran.blit(pygame.transform.scale(bouton_regle_image, (bouton_regle_image.get_width() + 10, bouton_regle_image.get_height() + 10)), (1076, 190))
+            ecran.blit(pygame.transform.scale(bouton_regle_image, (bouton_regle_image.get_width() + 15, bouton_regle_image.get_height() + 15)), (1096, 190))
         else:
             pygame.time.wait(20)
             ecran.blit(bouton_regle_image, (1096, 200))
 
         if survol_parametre:
-            ecran.blit(pygame.transform.scale(bouton_parametre_image, (bouton_parametre_image.get_width() + 10, bouton_parametre_image.get_height() + 10)), (1076, 539))
+            ecran.blit(pygame.transform.scale(bouton_parametre_image, (bouton_parametre_image.get_width() + 15, bouton_parametre_image.get_height() + 15)), (1096, 549))
         else:
             pygame.time.wait(20)
             ecran.blit(bouton_parametre_image, (1096, 549))
