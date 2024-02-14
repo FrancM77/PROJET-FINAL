@@ -9,7 +9,7 @@ def menu():
     ecran = pygame.display.set_mode((largeur_ecran, hauteur_ecran))
     pygame.display.set_caption("Menu")
 
-    fond_ecran = pygame.image.load('fond.png')
+    fond_ecran = pygame.image.load('fond.jpeg')
     fond_ecran = pygame.transform.scale(fond_ecran, (largeur_ecran, hauteur_ecran))
 
     bouton_demarrer_image = pygame.image.load('jouer.png')
@@ -34,9 +34,9 @@ def menu():
                     if 300 <= event.pos[0] <= 1100 and 200 <= event.pos[1] <= 900:
                         if 300 <= event.pos[0] <= 1100 and 200 <= event.pos[1] <= 900:
                             jeu.jeu()
-                        elif 1096 <= event.pos[0] <= 1696 and 200 <= event.pos[1] <= 550:
-                            print("Les règles du jeu")
-                        elif 1096 <= event.pos[0] <= 1696 and 549 <= event.pos[1] <= 899:
+                        if 1096 <= event.pos[0] <= 1096 + bouton_regle_image.get_width() and 200 <= event.pos[1] <= 200+bouton_demarrer_image.get_height():
+                            print("Les règles du jeu ss")
+                        if 1096 <= event.pos[0] <= 1696 and 549 <= event.pos[1] <= 899:
                             print("Les paramètres")
             elif event.type == MOUSEMOTION:
                 x, y = event.pos

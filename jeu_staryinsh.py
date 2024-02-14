@@ -8,7 +8,7 @@ def jeu():
     ecran = pygame.display.set_mode((largeur_ecran, hauteur_ecran))
     pygame.display.set_caption("Menu")
 
-    fond_ecran = pygame.image.load('fond.png')
+    fond_ecran = pygame.image.load('constellation.jpeg')
     fond_ecran = pygame.transform.scale(fond_ecran, (largeur_ecran, hauteur_ecran))
 
     en_cours = True
