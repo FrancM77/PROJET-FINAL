@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+import jeu_staryinsh as jeu
 
 pygame.init()
 
@@ -32,7 +33,7 @@ def menu():
                 if event.button == 1:
                     if 300 <= event.pos[0] <= 1100 and 200 <= event.pos[1] <= 900:
                         if 300 <= event.pos[0] <= 1100 and 200 <= event.pos[1] <= 900:
-                            print("Le jeu commence !")
+                            jeu.jeu()
                         elif 1096 <= event.pos[0] <= 1696 and 200 <= event.pos[1] <= 550:
                             print("Les règles du jeu")
                         elif 1096 <= event.pos[0] <= 1696 and 549 <= event.pos[1] <= 899:
