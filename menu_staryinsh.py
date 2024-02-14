@@ -17,8 +17,8 @@ def menu():
     bouton_parametre_image = pygame.image.load('parametre.png')
     
     bouton_demarrer_image = pygame.transform.scale(bouton_demarrer_image, (800, 700))
-    bouton_regle_image = pygame.transform.scale(bouton_regle_image, (600, 350))
-    bouton_parametre_image = pygame.transform.scale(bouton_parametre_image, (600, 350))
+    bouton_regle_image = pygame.transform.scale(bouton_regle_image, (800, 350))
+    bouton_parametre_image = pygame.transform.scale(bouton_parametre_image, (800, 350))
 
     survol_demarrer = False
     survol_regle = False
