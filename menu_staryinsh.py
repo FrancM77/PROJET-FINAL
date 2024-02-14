@@ -5,7 +5,7 @@ pygame.init()
 
 def menu():
     largeur_ecran, hauteur_ecran = pygame.display.Info().current_w, pygame.display.Info().current_h
-    ecran = pygame.display.set_mode((largeur_ecran, hauteur_ecran), FULLSCREEN)
+    ecran = pygame.display.set_mode((largeur_ecran, hauteur_ecran))
     pygame.display.set_caption("Menu")
 
     fond_ecran = pygame.image.load('fond.png')
