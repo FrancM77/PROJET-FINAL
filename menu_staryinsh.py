@@ -12,9 +12,9 @@ def menu():
     fond_ecran = pygame.image.load('fond.jpeg')
     fond_ecran = pygame.transform.scale(fond_ecran, (largeur_ecran, hauteur_ecran))
 
-    bouton_demarrer_image = pygame.image.load('jouer.png')
-    bouton_regle_image = pygame.image.load('regle.png')
-    bouton_parametre_image = pygame.image.load('parametre.png')
+    bouton_demarrer_image = pygame.image.load('jouer.jpg')
+    bouton_regle_image = pygame.image.load('regle.jpg')
+    bouton_parametre_image = pygame.image.load('parametre.jpg')
     
     bouton_demarrer_image = pygame.transform.scale(bouton_demarrer_image, (800, 700))
     bouton_regle_image = pygame.transform.scale(bouton_regle_image, (800, 350))
