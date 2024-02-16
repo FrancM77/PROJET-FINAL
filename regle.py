@@ -6,8 +6,8 @@ from pygame_widgets.textbox import TextBox
 pygame.init()
 win = pygame.display.set_mode((1000, 600))
 
-slider = Slider(win, 100, 100, 800, 40, min=0, max=99, step=1)
-output = TextBox(win, 475, 200, 50, 50, fontSize=30)
+slider = Slider(win, 100, 100, 800, 40, min=0, max=100, step=1)
+output = TextBox(win, 475, 200, 50, 50, fontSize=25)
 
 output.disable()
 

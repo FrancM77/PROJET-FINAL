@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+import carrouselle_img as regle
 import jeu_staryinsh as jeu
 
 pygame.init()
@@ -31,13 +32,12 @@ def menu():
                 en_cours = False
             elif event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
+                    if 1096 <= event.pos[0] <= 1846 and 200 <= event.pos[1] <= 550:
+                        regle.carrousel()
                     if 300 <= event.pos[0] <= 1100 and 200 <= event.pos[1] <= 900:
-                        if 300 <= event.pos[0] <= 1100 and 200 <= event.pos[1] <= 900:
-                            jeu.jeu()
-                        if 1096 <= event.pos[0] <= 1096 + bouton_regle_image.get_width() and 200 <= event.pos[1] <= 200+bouton_demarrer_image.get_height():
-                            print("Les règles du jeu ss")
-                        if 1096 <= event.pos[0] <= 1696 and 549 <= event.pos[1] <= 899:
-                            print("Les paramètres")
+                        jeu.jeu()
+                    if 1096 <= event.pos[0] <= 1696 and 549 <= event.pos[1] <= 899:
+                        print("Les paramètres")
             elif event.type == MOUSEMOTION:
                 x, y = event.pos
                 survol_demarrer = 300 <= x <= 300 + bouton_demarrer_image.get_width() and 200 <= y <= 200 + bouton_demarrer_image.get_height()

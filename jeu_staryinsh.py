@@ -31,4 +31,3 @@ def jeu():
         pygame.display.flip()
 
     pygame.quit()
-
