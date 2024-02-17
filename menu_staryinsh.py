@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 import carrouselle_img as regle
 import jeu_staryinsh as jeu
+import parametre_staryinsh as parametre
 
 pygame.init()
 
@@ -12,14 +13,17 @@ def menu():
 
     fond_ecran = pygame.image.load('fond.jpeg')
     fond_ecran = pygame.transform.scale(fond_ecran, (largeur_ecran, hauteur_ecran))
-
+    
+    ratio_largeur = largeur_ecran / 2048
+    ratio_hauteur = hauteur_ecran / 1152
+    
     bouton_demarrer_image = pygame.image.load('jouer.jpg')
     bouton_regle_image = pygame.image.load('regle.jpg')
     bouton_parametre_image = pygame.image.load('parametre.jpg')
     
-    bouton_demarrer_image = pygame.transform.scale(bouton_demarrer_image, (800, 700))
-    bouton_regle_image = pygame.transform.scale(bouton_regle_image, (800, 350))
-    bouton_parametre_image = pygame.transform.scale(bouton_parametre_image, (800, 350))
+    bouton_demarrer_image = pygame.transform.scale(bouton_demarrer_image, (800*ratio_largeur, 700*ratio_hauteur))
+    bouton_regle_image = pygame.transform.scale(bouton_regle_image, (800*ratio_largeur, 350*ratio_hauteur))
+    bouton_parametre_image = pygame.transform.scale(bouton_parametre_image, (800*ratio_largeur, 350*ratio_hauteur))
 
     survol_demarrer = False
     survol_regle = False
@@ -32,37 +36,37 @@ def menu():
                 en_cours = False
             elif event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    if 1096 <= event.pos[0] <= 1846 and 200 <= event.pos[1] <= 550:
+                    if 1096*ratio_largeur <= event.pos[0] <= 1846*ratio_largeur and 200*ratio_hauteur <= event.pos[1] <= 550*ratio_hauteur:
                         regle.carrousel()
-                    if 300 <= event.pos[0] <= 1100 and 200 <= event.pos[1] <= 900:
+                    if 300*ratio_largeur <= event.pos[0] <= 1100*ratio_largeur and 200*ratio_hauteur <= event.pos[1] <= 900*ratio_hauteur:
                         jeu.jeu()
-                    if 1096 <= event.pos[0] <= 1696 and 549 <= event.pos[1] <= 899:
-                        print("Les paramètres")
-            elif event.type == MOUSEMOTION:
+                    if 1096*ratio_largeur <= event.pos[0] <= 1696*ratio_largeur and 549*ratio_hauteur <= event.pos[1] <= 899*ratio_hauteur:
+                        parametre.parametre()
+            elif event.type == MOUSEMOTION:    
                 x, y = event.pos
-                survol_demarrer = 300 <= x <= 300 + bouton_demarrer_image.get_width() and 200 <= y <= 200 + bouton_demarrer_image.get_height()
-                survol_regle = 1096 <= x <= 1096 + bouton_regle_image.get_width() and 200 <= y <= 200 + bouton_regle_image.get_height()
-                survol_parametre = 1096 <= x <= 1096 + bouton_parametre_image.get_width() and 549 <= y <= 549 + bouton_parametre_image.get_height()
+                survol_demarrer = 300*ratio_largeur <= x <= 300*ratio_largeur + bouton_demarrer_image.get_width() and 200*ratio_hauteur <= y <= 200*ratio_hauteur + bouton_demarrer_image.get_height()
+                survol_regle = 1096*ratio_largeur <= x <= 1096*ratio_largeur + bouton_regle_image.get_width() and 200*ratio_hauteur <= y <= 200*ratio_hauteur + bouton_regle_image.get_height()
+                survol_parametre = 1096*ratio_largeur <= x <= 1096*ratio_largeur + bouton_parametre_image.get_width() and 549*ratio_hauteur <= y <= 549*ratio_hauteur + bouton_parametre_image.get_height()
 
         ecran.blit(fond_ecran, (0, 0))
         
         if survol_demarrer:
-            ecran.blit(pygame.transform.scale(bouton_demarrer_image, (bouton_demarrer_image.get_width() + 15, bouton_demarrer_image.get_height() + 15)), (295, 195))
+            ecran.blit(pygame.transform.scale(bouton_demarrer_image, (bouton_demarrer_image.get_width() + 15, bouton_demarrer_image.get_height() + 15)), (295*ratio_largeur, 195*ratio_hauteur))
         else:
             pygame.time.wait(20)
-            ecran.blit(bouton_demarrer_image, (300, 200))
+            ecran.blit(bouton_demarrer_image, (300*ratio_largeur, 200*ratio_hauteur))
 
         if survol_regle:
-            ecran.blit(pygame.transform.scale(bouton_regle_image, (bouton_regle_image.get_width() + 15, bouton_regle_image.get_height() + 15)), (1096, 190))
+            ecran.blit(pygame.transform.scale(bouton_regle_image, (bouton_regle_image.get_width() + 15, bouton_regle_image.get_height() + 15)), (1096*ratio_largeur, 190*ratio_hauteur))
         else:
             pygame.time.wait(20)
-            ecran.blit(bouton_regle_image, (1096, 200))
+            ecran.blit(bouton_regle_image, (1096*ratio_largeur, 200*ratio_hauteur))
 
         if survol_parametre:
-            ecran.blit(pygame.transform.scale(bouton_parametre_image, (bouton_parametre_image.get_width() + 15, bouton_parametre_image.get_height() + 15)), (1096, 549))
+            ecran.blit(pygame.transform.scale(bouton_parametre_image, (bouton_parametre_image.get_width() + 15, bouton_parametre_image.get_height() + 15)), (1096*ratio_largeur, 549*ratio_hauteur))
         else:
             pygame.time.wait(20)
-            ecran.blit(bouton_parametre_image, (1096, 549))
+            ecran.blit(bouton_parametre_image, (1096*ratio_largeur, 549*ratio_hauteur))
             
 
         pygame.display.flip()
