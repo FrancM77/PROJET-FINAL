@@ -2,43 +2,43 @@ import pygame
 from pygame.locals import *
 import os
 
-def charger_images(largeur_ecran, hauteur_ecran):
-    dossier_images = 'images'
-    fichiers_images = os.listdir(dossier_images)
-    images = [pygame.image.load(os.path.join(dossier_images, img)) for img in fichiers_images]
-    images = [pygame.transform.scale(img, (largeur_ecran, hauteur_ecran)) for img in images]
+def load_images(screen_width, screen_height):
+    images_folder = 'images'
+    image_files = os.listdir(images_folder)
+    images = [pygame.image.load(os.path.join(images_folder, img)) for img in image_files]
+    images = [pygame.transform.scale(img, (screen_width, screen_height)) for img in images]
     return images
 
-def carrousel():
+def carousel():
     pygame.init()
     
-    largeur_ecran, hauteur_ecran = pygame.display.Info().current_w, pygame.display.Info().current_h
-    ecran = pygame.display.set_mode((largeur_ecran, hauteur_ecran))
+    screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
+    screen = pygame.display.set_mode((screen_width, screen_height))
 
-    pygame.display.set_caption("Carrousel d'images")
+    pygame.display.set_caption("Image Carousel")
     
-    regle_image = pygame.image.load('images/regle1.jpg')
-    regle_image = pygame.transform.scale(regle_image, (largeur_ecran, hauteur_ecran))
-    ecran.blit(regle_image, (0, 0))
+    rule_image = pygame.image.load('images/rule1.jpg')
+    rule_image = pygame.transform.scale(rule_image, (screen_width, screen_height))
+    screen.blit(rule_image, (0, 0))
     pygame.display.flip()
 
-    images = charger_images(largeur_ecran, hauteur_ecran)
+    images = load_images(screen_width, screen_height)
 
-    position_carrousel_x = 0
-    indice_image_actuelle = 0
+    carousel_x_position = 0
+    current_image_index = 0
 
-    marge_gauche_bouton = 0.655
-    marge_droite_bouton = 0.48
-    marge_basse_bouton = 0.2
+    left_button_margin = 0.655
+    right_button_margin = 0.48
+    bottom_button_margin = 0.2
 
-    largeur_bouton = int(largeur_ecran * 0.15)
-    hauteur_bouton = int(hauteur_ecran * 0.1)
+    button_width = int(screen_width * 0.15)
+    button_height = int(screen_height * 0.1)
 
-    bouton_suivant = pygame.transform.scale(pygame.image.load('suivant_button.png'), (largeur_bouton, hauteur_bouton))
-    bouton_precedent = pygame.transform.scale(pygame.image.load('precedent_button.png'), (largeur_bouton, hauteur_bouton))
+    next_button = pygame.transform.scale(pygame.image.load('next_button.png'), (button_width, button_height))
+    previous_button = pygame.transform.scale(pygame.image.load('previous_button.png'), (button_width, button_height))
 
-    en_cours = True
-    while en_cours:
+    running = True
+    while running:
         for event in pygame.event.get():
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 from menu_staryinsh import menu
@@ -46,34 +46,35 @@ def carrousel():
                 return
             elif event.type == MOUSEMOTION:
                 x, y = event.pos
-                survol_bouton_precedent = largeur_ecran - largeur_ecran * marge_gauche_bouton <= x <= largeur_ecran - largeur_ecran * marge_gauche_bouton + largeur_bouton and hauteur_ecran - hauteur_ecran * marge_basse_bouton <= y <= hauteur_ecran - hauteur_ecran * marge_basse_bouton + hauteur_bouton
-                survol_bouton_suivant = largeur_ecran - largeur_ecran * marge_droite_bouton <= x <= largeur_ecran - largeur_ecran * marge_droite_bouton + largeur_bouton and hauteur_ecran - hauteur_ecran * marge_basse_bouton <= y <= hauteur_ecran - hauteur_ecran * marge_basse_bouton + hauteur_bouton
+                hovering_over_previous_button = screen_width - screen_width * left_button_margin <= x <= screen_width - screen_width * left_button_margin + button_width and screen_height - screen_height * bottom_button_margin <= y <= screen_height - screen_height * bottom_button_margin + button_height
+                hovering_over_next_button = screen_width - screen_width * right_button_margin <= x <= screen_width - screen_width * right_button_margin + button_width and screen_height - screen_height * bottom_button_margin <= y <= screen_height - screen_height * bottom_button_margin + button_height
 
             elif event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    if survol_bouton_suivant:
-                        indice_image_actuelle = (indice_image_actuelle + 1) % len(images)
-                        position_carrousel_x = -indice_image_actuelle * largeur_ecran
-                    elif survol_bouton_precedent:
-                        indice_image_actuelle = (indice_image_actuelle - 1) % len(images)
-                        position_carrousel_x = -indice_image_actuelle * largeur_ecran
+                    if hovering_over_next_button:
+                        current_image_index = (current_image_index + 1) % len(images)
+                        carousel_x_position = -current_image_index * screen_width
+                    elif hovering_over_previous_button:
+                        current_image_index = (current_image_index - 1) % len(images)
+                        carousel_x_position = -current_image_index * screen_width
 
         for i, image in enumerate(images):
-            position_image_x = i * largeur_ecran + position_carrousel_x
-            transition_x = max(0, min(largeur_ecran, position_image_x))
-            ecran.blit(image, (transition_x, 0))
+            image_x_position = i * screen_width + carousel_x_position
+            transition_x = max(0, min(screen_width, image_x_position))
+            screen.blit(image, (transition_x, 0))
 
-        if survol_bouton_suivant:
-            ecran.blit(pygame.transform.scale(bouton_suivant, (bouton_suivant.get_width() + 15, bouton_suivant.get_height() + 15)), (largeur_ecran - largeur_ecran * marge_droite_bouton - 7, hauteur_ecran - hauteur_ecran * marge_basse_bouton - 7))
+        if hovering_over_next_button:
+            screen.blit(pygame.transform.scale(next_button, (next_button.get_width() + 15, next_button.get_height() + 15)), (screen_width - screen_width * right_button_margin - 7, screen_height - screen_height * bottom_button_margin - 7))
         else:
-            ecran.blit(bouton_suivant, (largeur_ecran - largeur_ecran * marge_droite_bouton, hauteur_ecran - hauteur_ecran * marge_basse_bouton))
+            screen.blit(next_button, (screen_width - screen_width * right_button_margin, screen_height - screen_height * bottom_button_margin))
 
-        if survol_bouton_precedent:
-            ecran.blit(pygame.transform.scale(bouton_precedent, (bouton_precedent.get_width() + 15, bouton_precedent.get_height() + 15)), (largeur_ecran - largeur_ecran * marge_gauche_bouton - 7, hauteur_ecran - hauteur_ecran * marge_basse_bouton - 7))
+        if hovering_over_previous_button:
+            screen.blit(pygame.transform.scale(previous_button, (previous_button.get_width() + 15, previous_button.get_height() + 15)), (screen_width - screen_width * left_button_margin - 7, screen_height - screen_height * bottom_button_margin - 7))
         else:
-            ecran.blit(bouton_precedent, (largeur_ecran - largeur_ecran * marge_gauche_bouton, hauteur_ecran - hauteur_ecran * marge_basse_bouton))
+            screen.blit(previous_button, (screen_width - screen_width * left_button_margin, screen_height - screen_height * bottom_button_margin))
 
         pygame.display.flip()
 
     pygame.quit()
+
 
