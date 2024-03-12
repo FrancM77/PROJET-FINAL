@@ -48,7 +48,7 @@ def menu():
                         jeu.jeu()
                     if 1046*ratio_largeur <= event.pos[0] <= 1646*ratio_largeur and 549*ratio_hauteur <= event.pos[1] <= 899*ratio_hauteur:
                         parametre.parametre()
-            elif event.type == MOUSEMOTION:    
+            elif event.type == MOUSEMOTION:
                 x, y = event.pos
                 survol_demarrer = 250*ratio_largeur <= x <= 250*ratio_largeur + bouton_demarrer_image.get_width() and 200*ratio_hauteur <= y <= 200*ratio_hauteur + bouton_demarrer_image.get_height()
                 survol_regle = 1046*ratio_largeur <= x <= 1046*ratio_largeur + bouton_regle_image.get_width() and 200*ratio_hauteur <= y <= 200*ratio_hauteur + bouton_regle_image.get_height()
