@@ -45,7 +45,7 @@ def menu():
                     if 1046*ratio_largeur <= event.pos[0] <= 1796*ratio_largeur and 200*ratio_hauteur <= event.pos[1] <= 550*ratio_hauteur:
                         regle.carrousel()
                     if 250*ratio_largeur <= event.pos[0] <= 1050*ratio_largeur and 200*ratio_hauteur <= event.pos[1] <= 900*ratio_hauteur:
-                        jeu.jeu()
+                        jeu.launch_game()
                     if 1046*ratio_largeur <= event.pos[0] <= 1646*ratio_largeur and 549*ratio_hauteur <= event.pos[1] <= 899*ratio_hauteur:
                         parametre.parametre()
             elif event.type == MOUSEMOTION:
