@@ -1,8 +1,8 @@
 import pygame
 from pygame.locals import *
-import image_carousel as rules
-import staryinsh_game as game
-import staryinsh_settings as settings
+import carrouselle_img as rules
+import jeu_staryinsh as game
+import parametre_staryinsh as settings
 
 pygame.init()
 
@@ -20,9 +20,9 @@ def menu():
     height_ratio = screen_height / 1152
     
     # Loading the images
-    start_button_image = pygame.image.load('start.jpg')
-    rules_button_image = pygame.image.load('rules.jpg')
-    settings_button_image = pygame.image.load('settings.jpg')
+    start_button_image = pygame.image.load('jouer.jpg')
+    rules_button_image = pygame.image.load('regle.jpg')
+    settings_button_image = pygame.image.load('parametre.jpg')
     
     # Resizing the images
     start_button_image = pygame.transform.scale(start_button_image, (800*width_ratio, 700*height_ratio))

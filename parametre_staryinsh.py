@@ -6,30 +6,30 @@ from pygame_widgets.textbox import TextBox
 
 pygame.init()
 
-def parametre():
-    largeur_ecran, hauteur_ecran = pygame.display.Info().current_w, pygame.display.Info().current_h
-    ecran = pygame.display.set_mode((largeur_ecran, hauteur_ecran))
-    pygame.display.set_caption("Menu")
-    fond_ecran = pygame.image.load('fond.jpeg')
-    fond_ecran = pygame.transform.scale(fond_ecran, (largeur_ecran, hauteur_ecran))
+def settings():
+    screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption("Settings")
+    background_screen = pygame.image.load('background.jpeg')
+    background_screen = pygame.transform.scale(background_screen, (screen_width, screen_height))
     
-    slider = Slider(ecran, 1700, 200, 300, 20, min=0, max=100, step=1)
-    sortie = TextBox(ecran, 1600, 185, 65, 50, fontSize=30)
+    slider = Slider(screen, 1700, 200, 300, 20, min=0, max=100, step=1)
+    output = TextBox(screen, 1600, 185, 65, 50, fontSize=30)
 
-    sortie.disable()
+    output.disable()
     
-    en_cours = True
-    while en_cours:
+    running = True
+    while running:
         for event in pygame.event.get():
             if event.type == KEYDOWN and event.key == K_ESCAPE:
-                en_cours = False
+                running = False
 
-        sortie.setText(str(slider.getValue()))
+        output.setText(str(slider.getValue()))
 
         pygame_widgets.update(event)
         pygame.display.update()
         
-        ecran.blit(fond_ecran, (0, 0))
+        screen.blit(background_screen, (0, 0))
         pygame.display.flip()
 
 

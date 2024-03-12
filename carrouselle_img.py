@@ -17,7 +17,7 @@ def carousel():
 
     pygame.display.set_caption("Image Carousel")
     
-    rule_image = pygame.image.load('images/rule1.jpg')
+    rule_image = pygame.image.load('images/regle1.jpg')
     rule_image = pygame.transform.scale(rule_image, (screen_width, screen_height))
     screen.blit(rule_image, (0, 0))
     pygame.display.flip()
