@@ -80,7 +80,7 @@ class Game:
                     self.click_hit_box((697+(i*75))*width_ratio, (712-(i*43))*height_ratio, (723+(i*75))*width_ratio, (737-(i*43))*height_ratio, event, square_size, screen,i,j)
                 for i in range(9):
                     j=7
-                    self.click_hit_box((773+(i*75))*width_ratio, 755-((i*43))*height_ratio, (799+(i*75))*width_ratio, (780-(i*43))*height_ratio, event, square_size, screen,i,j)
+                    self.click_hit_box((773+(i*75))*width_ratio, (755-(i*43))*height_ratio, (799+(i*75))*width_ratio, (780-(i*43))*height_ratio, event, square_size, screen,i,j)
                 for i in range(8):
                     j=8
                     self.click_hit_box((848+(i*75))*width_ratio, (800-(i*43))*height_ratio, (873+(i*75))*width_ratio, (825-(i*43))*height_ratio, event, square_size, screen,i,j)
