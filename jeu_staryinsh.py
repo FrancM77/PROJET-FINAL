@@ -6,11 +6,19 @@ class Game:
         self.board = [[0 for i in range(10)] for j in range(10)]
         self.player = 1
         self.nb_pieces_placed = 0
+        self.nb_pieces_full_placed = 0
         self.piece_image_p1 = pygame.image.load("./pion/pion_j1.png")
         self.piece_image_p1 = pygame.transform.scale(self.piece_image_p1, (80, 80))
         self.piece_image_p2 = pygame.image.load("./pion/pion_j2.png")
         self.piece_image_p2 = pygame.transform.scale(self.piece_image_p2, (80, 80))
-        
+        self.piece_image_p3 = pygame.image.load("./pion/pion1.png")    
+        self.piece_image_p3 = pygame.transform.scale(self.piece_image_p3, (80, 80))
+        self.piece_image_p4 = pygame.image.load("./pion/pion2.png")
+        self.piece_image_p4 = pygame.transform.scale(self.piece_image_p4, (80, 80))  
+        self.piece_image_p5 = pygame.image.load("./pion/pion3.png")
+        self.piece_image_p5 = pygame.transform.scale(self.piece_image_p5, (80, 80))
+        self.piece_image_p6 = pygame.image.load("./pion/pion4.png")
+        self.piece_image_p6 = pygame.transform.scale(self.piece_image_p6, (80, 80))
 
     def change_player(self):
         if self.player == 1:
@@ -22,16 +30,34 @@ class Game:
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
                 if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
-                    if self.board[j][i] == 0:
+                    if self.nb_pieces_placed < 10 and self.board[j][i] == 0:
                         self.nb_pieces_placed += 1
                         if self.player == 1:
                             screen.blit(self.piece_image_p1, (x2-40, y2-43))
                             self.board[j][i] = 1
+                            self.change_player()
+                            return True
                         else:
                             screen.blit(self.piece_image_p2, (x2-40, y2-43))
                             self.board[j][i] = 2
-                        self.change_player()
-                        return True
+                            self.change_player()
+                            return True
+                    else:
+                        if self.nb_pieces_full_placed <= 30 and (self.board[j][i] == 1 or self.board[j][i] == 2):
+                            if self.player == 1 and self.board[j][i] == 1:
+                                screen.blit(self.piece_image_p5, (x2-40, y2-43))
+                                self.board[j][i] = 3
+                                self.nb_pieces_full_placed += 1
+                                self.change_player()
+                                return True
+                            else:
+                                if self.player == 2 and self.board[j][i] == 2:
+                                    screen.blit(self.piece_image_p6, (x2-40, y2-43))
+                                    self.nb_pieces_full_placed += 1
+                                    self.board[j][i] = 4
+                                    self.change_player()
+                                    return True
+                        
         return False
     
     def show_board(self):
@@ -51,7 +77,7 @@ class Game:
 
         running = True
         screen.blit(background, (0, 0))
-        square_size = 50
+        square_size = 50*width_ratio
         while running:
             for event in pygame.event.get():
                 if event.type == KEYDOWN and event.key == K_ESCAPE:
@@ -93,7 +119,7 @@ class Game:
                     
                 pygame.display.flip()
                 
-                if self.nb_pieces_placed==10:
+                if self.nb_pieces_placed==10 and self.nb_pieces_full_placed==30:
                     self.show_board()
                     running = False
         pygame.quit()
@@ -103,5 +129,4 @@ def launch_game():
     game = Game()
     game.play()
 
-
-
+launch_game()
