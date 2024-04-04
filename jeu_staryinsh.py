@@ -25,6 +25,8 @@ class Game:
             self.player = 2
         else:
             self.player = 1
+            
+
 
     def click_hit_box(self, x, y, x2, y2, event, square_size, screen, i, j):
         if event.type == MOUSEBUTTONDOWN:
@@ -60,9 +62,6 @@ class Game:
                         
         return False
     
-    def show_board(self):
-        for row in self.board:
-            print(row)
             
     def play(self):
         pygame.init()
