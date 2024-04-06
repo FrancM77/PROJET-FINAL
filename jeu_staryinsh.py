@@ -10,6 +10,7 @@ class Game:
         self.placed_second_piece = False
         self.placed_third_piece = False
         self.previous_position = None
+        self.previous_player = None  
         self.piece_image = {}
         for i in range(1,7):
             ratio_height , ratio_len = self.ratio()
@@ -37,29 +38,33 @@ class Game:
     
     def place_second_piece(self, x, y, x2, y2, event, square_size, screen, i, j):
         if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
-            if (self.board[j][i] == 1 or self.board[j][i] == 2):
-                if self.player == 1 and self.board[j][i] == 1:
-                    self.board[j][i] = 5
+            if self.player == 1 and self.board[j][i] == 1:
+                self.board[j][i] = 5
+                self.display_piece(x2, y2, screen, i, j)
+                return True, (i, j, x2, y2)
+            else:
+                if self.player == 2 and self.board[j][i] == 2:
+                    self.board[j][i] = 6
                     self.display_piece(x2, y2, screen, i, j)
-                    return True, (i, j,x2,y2)
-                else:
-                    if self.player == 2 and self.board[j][i] == 2:
-                        self.board[j][i] = 6
-                        self.display_piece(x2, y2, screen, i, j)
-                        return True, (i, j,x2,y2)
-                self.change_player()
-        return False,None
-    
+                    return True, (i, j, x2, y2)
+            self.change_player()
+        return False, None
+
+
     def place_third_piece(self, x, y, x2, y2, event, square_size, screen, i, j):
+        if self.previous_player == self.player:
+            return False
         previous_i , previous_j , previous_x2 , previous_y2 = self.previous_position
         if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
-            if  (self.board[j][i] == 0 ):
+            if self.board[j][i] == 0:
                 if self.player == 1 and self.board[j][i] == 0:
                     self.board[j][i] = 1
                     self.display_piece(x2, y2, screen, i, j)
                     self.board[previous_j][previous_i] = 3
                     self.display_piece(previous_x2, previous_y2, screen, previous_i, previous_j)
+                    self.previous_player = self.player
                     self.change_player()
+                    
                     return True
                 else:
                     if self.player == 2 and self.board[j][i] == 0:
@@ -67,7 +72,9 @@ class Game:
                         self.display_piece(x2, y2, screen, i, j)
                         self.board[previous_j][previous_i] = 4
                         self.display_piece(previous_x2, previous_y2, screen, previous_i, previous_j)
+                        self.previous_player = self.player
                         self.change_player()
+                        
                         return True
         return False
 
@@ -100,10 +107,7 @@ class Game:
             screen.blit(self.piece_image[5], (x2-40, y2-43))
         elif self.board[j][i] == 6:
             screen.blit(self.piece_image[6], (x2-40, y2-43))
-    
 
-            
-                
         
 
     def hit_box(self, event, square_size, screen,width_ratio, height_ratio):
