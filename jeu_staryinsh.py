@@ -3,7 +3,18 @@ from pygame.locals import *
 
 class Game:
     def __init__(self):
-        self.board = [[0 for i in range(10)] for j in range(11)]
+        self.board= [ ['N', 0, 0 ,0 ,0, 'N', 'N' ,'N', 'N' ,'N', 'N'],
+                    [0, 0, 0 ,0, 0 ,0 ,0, 'N', 'N' ,'N', 'N'],
+                    [0, 0 ,0 ,0 ,0, 0, 0 ,0, 'N', 'N' ,'N'] ,
+                    [0 ,0 ,0 ,0 ,0, 0, 0, 0, 0, 'N' ,'N'],
+                    [0, 0 ,0 ,0 ,0 ,0, 0 ,0, 0 ,0 ,'N' ],
+                    ['N', 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,'N'] ,
+                    ['N', 0 ,0 ,0 ,0 ,0 ,0, 0, 0, 0, 0 ],
+                    ['N' ,'N', 0, 0 ,0 ,0 ,0, 0 ,0 ,0 ,0] ,
+                    ['N' ,'N', 'N', 0, 0 ,0 ,0 ,0 ,0, 0 ,0],
+                    ['N', 'N', 'N', 'N', 0 ,0, 0 ,0, 0 ,0 ,0],
+                    ['N', 'N' ,'N', 'N', 'N' ,'N' ,0 ,0, 0 ,0, 'N']]
+        
         self.player = 1
         self.nb_pieces_placed_depart = 0
         self.nb_pieces_full_placed = 0
@@ -23,64 +34,71 @@ class Game:
         else:
             self.player = 1
 
+    def recover_offset(self,j):
+        count = 0
+        for row in range(11):
+            if self.board[j][row] == 'N':
+                count += 1
+            elif self.board[j][row] == 0:
+                return count
+            
+    
     def place_first_piece(self, x, y, x2, y2, event, square_size, screen, i, j):
         if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
-            if self.nb_pieces_placed_depart < 10 and self.board[j][i] == 0:
+            i += self.recover_offset(j)
+            if self.board[j][i] == 0:
                 self.nb_pieces_placed_depart += 1
-                if self.player == 1:
-                    self.board[j][i] = 1
-                    self.display_piece(x2, y2, screen, i, j)
-                else:
-                    self.board[j][i] = 2
-                    self.display_piece(x2, y2, screen, i, j)
+                self.board[j][i] = 1 if self.player == 1 else 2
+                self.display_piece(x2, y2, screen, i, j)
                 self.change_player()
         return False
     
     def place_second_piece(self, x, y, x2, y2, event, square_size, screen, i, j):
         if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
+            i += self.recover_offset(j)
             if self.player == 1 and self.board[j][i] == 1:
                 self.board[j][i] = 5
                 self.display_piece(x2, y2, screen, i, j)
                 return True, (i, j, x2, y2)
-            else:
-                if self.player == 2 and self.board[j][i] == 2:
-                    self.board[j][i] = 6
-                    self.display_piece(x2, y2, screen, i, j)
-                    return True, (i, j, x2, y2)
+            if self.player == 2 and self.board[j][i] == 2:
+                self.board[j][i] = 6
+                self.display_piece(x2, y2, screen, i, j)
+                return True, (i, j, x2, y2)
             self.change_player()
         return False, None
 
+   
 
     def place_third_piece(self, x, y, x2, y2, event, square_size, screen, i, j):
         if self.previous_player == self.player:
             return False
         previous_i , previous_j , previous_x2 , previous_y2 = self.previous_position
         if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
+            i += self.recover_offset(j)
             if self.board[j][i] == 0:
-                if self.player == 1 and self.board[j][i] == 0:
-                    self.board[j][i] = 1
-                    self.display_piece(x2, y2, screen, i, j)
-                    self.board[previous_j][previous_i] = 3
-                    self.display_piece(previous_x2, previous_y2, screen, previous_i, previous_j)
-                    self.previous_player = self.player
-                    self.change_player()
-                    
-                    return True
-                else:
-                    if self.player == 2 and self.board[j][i] == 0:
-                        self.board[j][i] = 2
-                        self.display_piece(x2, y2, screen, i, j)
-                        self.board[previous_j][previous_i] = 4
-                        self.display_piece(previous_x2, previous_y2, screen, previous_i, previous_j)
-                        self.previous_player = self.player
-                        self.change_player()
-                        
-                        return True
+                self.board[j][i] = 1 if self.player == 1 else 2
+                self.display_piece(x2, y2, screen, i, j)
+                self.board[previous_j][previous_i] = 3 if self.player == 1 else 4
+                self.display_piece(previous_x2, previous_y2, screen, previous_i, previous_j)
+                self.previous_player = self.player
+                self.change_player()
+                return True
         return False
+    
+    def is_valid_move(self, start_x, start_y, end_x, end_y):
+        depplacement_possible_en_diago = (i+2 and j+1) or (i+3 and j+2) 
+        for i in range(2,11):
+            for j in range(1,11):
+                if self.board[j][i] == 1:
+                    if i == start_x and j == start_y:
+                        if self.board[end_y][end_x] == 0:
+                            return True
+                        else:
+                            return False
 
     
     def piece_action(self, x, y, x2, y2, event, square_size, screen, i, j):
-        if self.nb_pieces_placed_depart < 10:
+        if self.nb_pieces_placed_depart < 2:
             return self.place_first_piece(x, y, x2, y2, event, square_size, screen, i, j)
         else:
             if self.placed_second_piece:
@@ -185,7 +203,7 @@ class Game:
                     
                 pygame.display.flip()
                 
-                if self.nb_pieces_placed_depart==10 and self.nb_pieces_full_placed==30:
+                if self.nb_pieces_placed_depart==2 and self.nb_pieces_full_placed==2:
                     self.show_board()
                     running = False
         pygame.quit()
