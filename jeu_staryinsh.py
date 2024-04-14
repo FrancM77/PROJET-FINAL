@@ -75,7 +75,7 @@ class Game:
         previous_i , previous_j , previous_x2 , previous_y2 = self.previous_position
         if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
             i += self.recover_offset(j)
-            if self.board[j][i] == 0:
+            if self.is_valid_move(previous_i, previous_j, i, j) and self.board[j][i] == 0:
                 self.board[j][i] = 1 if self.player == 1 else 2
                 self.display_piece(x2, y2, screen, i, j)
                 self.board[previous_j][previous_i] = 3 if self.player == 1 else 4
@@ -86,15 +86,38 @@ class Game:
         return False
     
     def is_valid_move(self, start_x, start_y, end_x, end_y):
-        depplacement_possible_en_diago = (i+2 and j+1) or (i+3 and j+2) 
-        for i in range(2,11):
-            for j in range(1,11):
-                if self.board[j][i] == 1:
-                    if i == start_x and j == start_y:
-                        if self.board[end_y][end_x] == 0:
-                            return True
-                        else:
-                            return False
+        if start_x == end_x or start_y == end_y:
+            if start_x == end_x:  # colonne
+                min_y = min(start_y, end_y)
+                max_y = max(start_y, end_y)
+                for y in range(min_y + 1, max_y):
+                    if self.board[y][start_x] in [1, 2]: 
+                        return False
+            else: # ligne
+                min_x = min(start_x, end_x)
+                max_x = max(start_x, end_x)
+                for x in range(min_x + 1, max_x):
+                    if self.board[start_y][x] in [1, 2]: 
+                        return False
+            return True
+        if start_x - end_x == start_y - end_y: # diagonale que celle utile
+            min_x = min(start_x, end_x)
+            max_x = max(start_x, end_x)
+            min_y = min(start_y, end_y)
+            max_y = max(start_y, end_y)
+            for i in range(1, abs(start_x - end_x)):
+                x = min_x + i
+                y = min_y + i
+                if self.board[y][x] in [1, 2]:
+                    return False
+            return True
+
+        return False
+
+
+
+
+         
 
     
     def piece_action(self, x, y, x2, y2, event, square_size, screen, i, j):
@@ -109,7 +132,9 @@ class Game:
                     self.previous_position = None
             else:
                 self.placed_second_piece, self.previous_position = self.place_second_piece(x, y, x2, y2, event, square_size, screen, i, j)
-            return False
+
+        return False
+
 
 
     def display_piece(self, x2, y2, screen, i, j):
