@@ -26,7 +26,7 @@ class Game:
         for i in range(1,7):
             ratio_height , ratio_len = self.ratio()
             self.piece_image[i] = pygame.image.load(f'./pion/pion{i}.png')
-            self.piece_image[i] = pygame.transform.scale(self.piece_image[i], (52*ratio_height, 52*ratio_len))
+            self.piece_image[i] = pygame.transform.scale(self.piece_image[i], (60*ratio_height, 60*ratio_len))
 
     def change_player(self):
         if self.player == 1:
@@ -85,6 +85,8 @@ class Game:
                 return True
         return False
     
+    
+    
     def is_valid_move(self, start_x, start_y, end_x, end_y):
         if start_x == end_x or start_y == end_y:
             if start_x == end_x:  # colonne
@@ -139,17 +141,17 @@ class Game:
 
     def display_piece(self, x2, y2, screen, i, j):
         if self.board[j][i] == 1:
-            screen.blit(self.piece_image[1], (x2-40, y2-43))
+            screen.blit(self.piece_image[1], (x2-31, y2-35))
         elif self.board[j][i] == 2:
-            screen.blit(self.piece_image[2], (x2-40, y2-43))
+            screen.blit(self.piece_image[2], (x2-31, y2-35))
         elif self.board[j][i] == 3:
-            screen.blit(self.piece_image[3], (x2-40, y2-43))
+            screen.blit(self.piece_image[3], (x2-31, y2-35))
         elif self.board[j][i] == 4:
-            screen.blit(self.piece_image[4], (x2-40, y2-43))
+            screen.blit(self.piece_image[4], (x2-31, y2-35))
         elif self.board[j][i] == 5:
-            screen.blit(self.piece_image[5], (x2-40, y2-43))
+            screen.blit(self.piece_image[5], (x2-31, y2-35))
         elif self.board[j][i] == 6:
-            screen.blit(self.piece_image[6], (x2-40, y2-43))
+            screen.blit(self.piece_image[6], (x2-31, y2-35))
 
         
 
@@ -201,7 +203,6 @@ class Game:
         screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
         width_ratio = screen_width / 2048
         height_ratio = screen_height / 1152
-        pygame.quit()
         return width_ratio, height_ratio    
     
     
@@ -210,8 +211,7 @@ class Game:
         screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
         screen = pygame.display.set_mode((screen_width, screen_height))
         pygame.display.set_caption("Menu")
-        width_ratio = screen_width / 2048
-        height_ratio = screen_height / 1152
+        width_ratio,height_ratio=self.ratio()
 
         background = pygame.image.load('constellation.jpeg')
         background = pygame.transform.scale(background, (screen_width, screen_height))
@@ -228,7 +228,7 @@ class Game:
                     
                 pygame.display.flip()
                 
-                if self.nb_pieces_placed_depart==2 and self.nb_pieces_full_placed==2:
+                if self.nb_pieces_placed_depart==2 and self.nb_pieces_full_placed==20:
                     self.show_board()
                     running = False
         pygame.quit()
