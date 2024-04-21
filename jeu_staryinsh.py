@@ -23,12 +23,10 @@ class Game:
         self.previous_position = None
         self.previous_player = None  
         self.piece_image = {}
-        self.piece_image[0] = pygame.image.load('./pion/0.png')
         for i in range(1,7):
             ratio_height , ratio_len = self.ratio()
             self.piece_image[i] = pygame.image.load(f'./pion/pion{i}.png')
             self.piece_image[i] = pygame.transform.scale(self.piece_image[i], (60*ratio_height, 60*ratio_len))
-            self.piece_image[0] = pygame.transform.scale(self.piece_image[0], (75*ratio_height, 75*ratio_len))
 
     def change_player(self):
         if self.player == 1:
