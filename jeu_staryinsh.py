@@ -3,7 +3,7 @@ from pygame.locals import *
 
 class Game:
     def __init__(self):
-        self.board= [ ['N', 0, 0 ,0 ,0, 'N', 'N' ,'N', 'N' ,'N', 'N'],
+        self.board= [['N', 0, 0 ,0 ,0, 'N', 'N' ,'N', 'N' ,'N', 'N'],
                     [0, 0, 0 ,0, 0 ,0 ,0, 'N', 'N' ,'N', 'N'],
                     [0, 0 ,0 ,0 ,0, 0, 0 ,0, 'N', 'N' ,'N'] ,
                     [0 ,0 ,0 ,0 ,0, 0, 0, 0, 0, 'N' ,'N'],
