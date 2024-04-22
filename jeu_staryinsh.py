@@ -18,6 +18,8 @@ class Game:
         self.player = 1
         self.nb_pieces_placed_depart = 0
         self.nb_pieces_full_placed = 0
+        self.player_1_points = 0 
+        self.player_2_points = 0
         self.placed_second_piece = False
         self.placed_third_piece = False
         self.previous_position = None
@@ -87,7 +89,7 @@ class Game:
     
     
     def is_valid_move(self, start_x, start_y, end_x, end_y):
-        if start_x == end_x:  # Déplacement vertical
+        if start_x == end_x:  # colonne (|)
             # Vérifier les pions en chemin
             for y in range(min(start_y, end_y) + 1, max(start_y, end_y)):
                 if self.board[y][start_x] in [1, 2]:  # Pions 1 et 2
@@ -97,7 +99,7 @@ class Game:
                 elif self.board[y][start_x] == 4:
                     self.board[y][start_x] = 3  # Retournement du pion 4 en pion 3
             return True
-        elif start_y == end_y:  # Déplacement horizontal
+        elif start_y == end_y:  # ligne (-)
             # Vérifier les pions en chemin
             for x in range(min(start_x, end_x) + 1, max(start_x, end_x)):
                 if self.board[start_y][x] in [1, 2]:  # Pions 1 et 2
@@ -107,7 +109,7 @@ class Game:
                 elif self.board[start_y][x] == 4:
                     self.board[start_y][x] = 3  # Retournement du pion 4 en pion 3
             return True
-        elif abs(start_x - end_x) == abs(start_y - end_y):  # Déplacement diagonal
+        elif start_x - end_x == start_y - end_y:  # Diagonal utile (\)
             # Vérifier les pions en chemin
             min_x = min(start_x, end_x)
             max_x = max(start_x, end_x)
@@ -127,7 +129,8 @@ class Game:
             return False
 
 
-    def align_condition(self):
+    def align_condition(self,screen):
+        temp = None
         for j in range(11):
             for i in range(10):
                 # Horizontal (-)
@@ -136,7 +139,8 @@ class Game:
                         if self.board[j][i] == self.board[j][i + 1] == self.board[j][i + 2] == self.board[j][i + 3] == self.board[j][i + 4]:
                             for k in range(5):
                                 self.board[j][i + k] = 0
-                            return True
+                            temp = 'break'
+                            break
 
                 # Vertical (|)
                 if j <= 6:
@@ -144,15 +148,23 @@ class Game:
                         if self.board[j][i] == self.board[j + 1][i] == self.board[j + 2][i] == self.board[j + 3][i] == self.board[j + 4][i]:
                             for k in range(5):
                                 self.board[j + k][i] = 0
-                            return True
+                            temp = 'break'
+                            break
 
                 # Diagonal utile (\)
                 if j <= 6 and i <= 5:
                     if self.board[j][i] in [3, 4]:
                         if self.board[j][i] == self.board[j + 1][i + 1] == self.board[j + 2][i + 2] == self.board[j + 3][i + 3] == self.board[j + 4][i + 4]:
                             for k in range(5):
-                                self.board[j + k][i + k] = 0    
-                            return True
+                                self.board[j + k][i + k] = 0 
+                            temp = 'break'
+                            break
+                        
+        if temp == 'break':
+            if self.player == 2:
+                self.player_1_points += 1
+            else:
+                self.player_2_points += 1
         return False
 
     
@@ -171,8 +183,8 @@ class Game:
         
         return False
 
-        
-
+    
+                    
     def display_piece(self,screen):
         self.load_background(screen)
         width_ratio, height_ratio  = self.ratio()
@@ -216,7 +228,33 @@ class Game:
         background = pygame.transform.scale(background, (screen_width, screen_height))
         screen.blit(background, (0, 0))     
             
-    def display_piece_action(self, x2, y2, screen, i, j): 
+    
+    # fonction qui s'occupe des pieces sur les cotes pour compter les points
+    
+    def load_side_img(self,number,alpha,x,y,screen):
+        image = self.piece_image[number].convert_alpha()
+        image.set_alpha(alpha)
+        image = pygame.transform.scale(image, (100, 100))
+        screen.blit(image, (x, y))
+        return image
+    
+    def display_points(self, screen):
+        for i in range(self.player_1_points):
+            self.load_side_img(1,256,10,10+(i*95),screen)
+        for i in range(self.player_2_points):
+            self.load_side_img(2,256,1940,1050-(i*95),screen)
+                    
+    def display_side_piece_start(self,screen):
+        for i in range(3):
+            self.load_side_img(1,2,10,10+(i*95),screen)
+            self.load_side_img(2,3,1940,1050-(i*95),screen)
+            
+    # fin de gestion des pieces sur les cotes
+    
+    
+    def display_piece_action(self, x2, y2, screen, i, j):
+        self.display_points(screen)
+        self.display_side_piece_start(screen)
         if self.board[j][i] == 1:
             screen.blit(self.piece_image[1], (x2, y2))
         elif self.board[j][i] == 2:
@@ -300,12 +338,12 @@ class Game:
                     menu()
                 
                 self.hit_box(event, square_size, screen,width_ratio, height_ratio)
-                    
+                
                 pygame.display.flip()
                 
-                if self.align_condition():
+                if self.align_condition(screen):
                     self.show_board()
-                if self.nb_pieces_full_placed == 15:
+                if self.nb_pieces_full_placed == 30:
                     self.show_board()   
                     running = False
         pygame.quit()
