@@ -167,39 +167,40 @@ class Game:
 
     def display_piece(self,screen):
         self.load_background(screen)
+        width_ratio, height_ratio  = self.ratio()
         for i in range(1,5):
             j=0
-            self.display_piece_action(649+(i*75)-31, 265-(i*43)-35,screen,i,j)
+            self.display_piece_action((649+(i*75)-31)*width_ratio, (265-(i*43)-35)*height_ratio,screen,i,j)
         for i in range(7):
             j=1
-            self.display_piece_action(649+(i*75)-31, 345-(i*43)-35,screen,i,j)
+            self.display_piece_action((649+(i*75)-31)*width_ratio, (345-(i*43)-35)*height_ratio,screen,i,j)
         for i in range(8):
             j=2
-            self.display_piece_action(649+(i*75)-31, 435-(i*43)-35,screen,i,j)
+            self.display_piece_action((649+(i*75)-31)*width_ratio, (435-(i*43)-35)*height_ratio,screen,i,j)
         for i in range(9):
             j=3
-            self.display_piece_action(647+(i*75)-31, 520-(i*43)-35,screen,i,j)    
+            self.display_piece_action((647+(i*75)-31)*width_ratio, (520-(i*43)-35)*height_ratio,screen,i,j)    
         for i in range(10):
             j=4
-            self.display_piece_action(647+(i*75)-31, 605-(i*43)-35,screen,i,j)
+            self.display_piece_action((647+(i*75)-31)*width_ratio, (605-(i*43)-35)*height_ratio,screen,i,j)
         for i in range(1,10):
             j=5
-            self.display_piece_action(649+(i*75)-31, 695-(i*43)-35,screen,i,j)
+            self.display_piece_action((649+(i*75)-31)*width_ratio, (695-(i*43)-35)*height_ratio,screen,i,j)
         for i in range(1,11): 
             j=6
-            self.display_piece_action(649+(i*75)-31, 782-(i*43)-35,screen,i,j)
+            self.display_piece_action((649+(i*75)-31)*width_ratio, (782-(i*43)-35)*height_ratio,screen,i,j)
         for i in range(2,11):
             j=7
-            self.display_piece_action(649+(i*75)-31, 870-(i*43)-35,screen,i,j)
+            self.display_piece_action((649+(i*75)-31)*width_ratio, (870-(i*43)-35)*height_ratio,screen,i,j)
         for i in range(3,11):
             j=8
-            self.display_piece_action(650+(i*75)-31, 957-(i*43)-35,screen,i,j)
+            self.display_piece_action((650+(i*75)-31)*width_ratio, (957-(i*43)-35)*height_ratio,screen,i,j)
         for i in range(4,11):
             j=9
-            self.display_piece_action(650+(i*75)-31, 1043-(i*43)-35,screen,i,j)
+            self.display_piece_action((650+(i*75)-31)*width_ratio, (1043-(i*43)-35)*height_ratio,screen,i,j)
         for i in range(5,11):
             j=10
-            self.display_piece_action(650+(i*75)-31, 1130-(i*43)-35,screen,i,j)
+            self.display_piece_action((650+(i*75)-31)*width_ratio, (1130-(i*43)-35)*height_ratio,screen,i,j)
     
     def load_background(self, screen):
         background = pygame.image.load('constellation.jpeg')
