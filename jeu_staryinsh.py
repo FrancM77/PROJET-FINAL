@@ -20,10 +20,12 @@ class Game:
         self.nb_pieces_full_placed = 0
         self.player_1_points = 0 
         self.player_2_points = 0
+        self.remove_mode = False
         self.placed_second_piece = False
         self.placed_third_piece = False
         self.previous_position = None
-        self.previous_player = None  
+        self.previous_player_second_piece = None
+        self.previous_player_third_piece = None  
         self.piece_image = {}
         for i in range(1,7):
             ratio_height , ratio_len = self.ratio()
@@ -55,15 +57,19 @@ class Game:
         return False
     
     def place_second_piece(self, x, y, event, square_size, screen, i, j):
+        if self.previous_player_second_piece == self.player:
+            return False,None
         if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
             i += self.recover_offset(j)
             if self.player == 1 and self.board[j][i] == 1:
                 self.board[j][i] = 5
                 self.display_piece(screen)
+                self.previous_player_second_piece = self.player
                 return True, (i, j)
             if self.player == 2 and self.board[j][i] == 2:
                 self.board[j][i] = 6
                 self.display_piece(screen)
+                self.previous_player_second_piece = self.player
                 return True, (i, j)
             self.change_player()
         return False, None
@@ -71,7 +77,7 @@ class Game:
    
 
     def place_third_piece(self, x, y, event, square_size, screen, i, j):
-        if self.previous_player == self.player:
+        if self.previous_player_third_piece == self.player:
             return False
         previous_i , previous_j = self.previous_position
         if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
@@ -81,7 +87,7 @@ class Game:
                 self.display_piece(screen)
                 self.board[previous_j][previous_i] = 3 if self.player == 1 else 4
                 self.display_piece(screen)
-                self.previous_player = self.player
+                self.previous_player_third_piece = self.player
                 self.change_player()
                 return True
         return False
@@ -139,6 +145,7 @@ class Game:
                         if self.board[j][i] == self.board[j][i + 1] == self.board[j][i + 2] == self.board[j][i + 3] == self.board[j][i + 4]:
                             for k in range(5):
                                 self.board[j][i + k] = 0
+                                self.display_piece(screen)
                             temp = 'break'
                             break
 
@@ -148,6 +155,7 @@ class Game:
                         if self.board[j][i] == self.board[j + 1][i] == self.board[j + 2][i] == self.board[j + 3][i] == self.board[j + 4][i]:
                             for k in range(5):
                                 self.board[j + k][i] = 0
+                                self.display_piece(screen)
                             temp = 'break'
                             break
 
@@ -157,6 +165,7 @@ class Game:
                         if self.board[j][i] == self.board[j + 1][i + 1] == self.board[j + 2][i + 2] == self.board[j + 3][i + 3] == self.board[j + 4][i + 4]:
                             for k in range(5):
                                 self.board[j + k][i + k] = 0 
+                                self.display_piece(screen)
                             temp = 'break'
                             break
                         
@@ -165,11 +174,15 @@ class Game:
                 self.player_1_points += 1
             else:
                 self.player_2_points += 1
+            self.remove_mode = True
+            return True
+        
+        self.display_points(screen)
         return False
 
     
     def piece_action(self, x, y, event, square_size, screen, i, j):
-        if self.nb_pieces_placed_depart < 2:
+        if self.nb_pieces_placed_depart < 4:
             return self.place_first_piece(x, y, event, square_size, screen, i, j)
         else:
             if self.placed_second_piece:
@@ -178,12 +191,27 @@ class Game:
                     self.nb_pieces_full_placed += 1
                     self.placed_second_piece = False
                     self.previous_position = None
+                    
             else:
+                self.change_player()
                 self.placed_second_piece, self.previous_position = self.place_second_piece(x, y,event, square_size, screen, i, j)
-        
+
         return False
 
-    
+    def remove_piece(self, x, y, event, square_size, screen, i, j):
+        if self.remove_mode and x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
+            i += self.recover_offset(j)
+            opponent = 2 if self.player == 1 else 1
+            if self.board[j][i] == opponent:
+                self.board[j][i] = 0
+                self.display_piece(screen)
+                self.remove_mode = False
+                self.change_player()
+                return True
+        return False
+
+
+
                     
     def display_piece(self,screen):
         self.load_background(screen)
@@ -253,7 +281,6 @@ class Game:
     
     
     def display_piece_action(self, x2, y2, screen, i, j):
-        self.display_points(screen)
         self.display_side_piece_start(screen)
         if self.board[j][i] == 1:
             screen.blit(self.piece_image[1], (x2, y2))
@@ -267,44 +294,70 @@ class Game:
             screen.blit(self.piece_image[5], (x2, y2))
         elif self.board[j][i] == 6:
             screen.blit(self.piece_image[6], (x2, y2))
-        
 
-    def hit_box(self, event, square_size, screen,width_ratio, height_ratio):
+
+
+    def hit_box(self, event, square_size, screen):
+        width_ratio, height_ratio = self.ratio()
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
                 for i in range(4):
-                    j=0
-                    self.piece_action((697+(i*75))*width_ratio, (190-(i*43))*height_ratio, event, square_size, screen,i,j)
+                    j = 0
+                    x,y = 697 + (i * 75)*width_ratio, 190 - (i * 43)*height_ratio
+                    self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(7):
-                    j=1
-                    self.piece_action((622+(i*75))*width_ratio, (320-(i*43))*height_ratio, event, square_size, screen,i,j)
+                    j = 1
+                    x,y = 622 + (i * 75)*width_ratio, 320 - (i * 43)*height_ratio
+                    self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(8):
-                    j=2
-                    self.piece_action((622+(i*75))*width_ratio, (405-(i*43))*height_ratio, event, square_size, screen,i,j)
+                    j = 2
+                    x,y = 622 + (i * 75)*width_ratio, 405 - (i * 43)*height_ratio
+                    self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(9):
-                    j=3
-                    self.piece_action((622+(i*75))*width_ratio, (495-(i*43))*height_ratio, event, square_size, screen,i,j)      
+                    j = 3
+                    x,y = 647 + (i * 75)*width_ratio, 495 - (i * 43)*height_ratio
+                    self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(10):
-                    j=4
-                    self.piece_action((622+(i*75))*width_ratio, (580-(i*43))*height_ratio, event, square_size, screen,i,j)
+                    j = 4
+                    x,y = 622 + (i * 75)*width_ratio, 580 - (i * 43)*height_ratio
+                    self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(9):
-                    j=5
-                    self.piece_action((697+(i*75))*width_ratio, (625-(i*43))*height_ratio, event, square_size, screen,i,j)
-                for i in range(10): 
-                    j=6
-                    self.piece_action((697+(i*75))*width_ratio, (712-(i*43))*height_ratio, event, square_size, screen,i,j)
+                    j = 5
+                    x,y = 697 + (i * 75)*width_ratio, 625 - (i * 43)*height_ratio
+                    self.hit_box_function(x,y,event, square_size, screen,i,j)
+                for i in range(10):
+                    j = 6
+                    x,y = 697 + (i * 75)*width_ratio, 712 - (i * 43)*height_ratio
+                    self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(9):
-                    j=7
-                    self.piece_action((773+(i*75))*width_ratio, (755-(i*43))*height_ratio, event, square_size, screen,i,j)
+                    j = 7
+                    x,y = 773 + (i * 75)*width_ratio, 755 - (i * 43)*height_ratio
+                    self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(8):
-                    j=8
-                    self.piece_action((848+(i*75))*width_ratio, (800-(i*43))*height_ratio, event, square_size, screen,i,j)
+                    j = 8
+                    x,y = 848 + (i * 75)*width_ratio, 800 - (i * 43)*height_ratio
+                    self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(7):
-                    j=9
-                    self.piece_action((925+(i*75))*width_ratio, (842-(i*43))*height_ratio, event, square_size, screen,i,j)
+                    j = 9
+                    x,y = 925 + (i * 75)*width_ratio, 842 - (i * 43)*height_ratio
+                    self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(4):
-                    j=10
-                    self.piece_action((1075+(i*75))*width_ratio, (843-(i*43))*height_ratio, event, square_size, screen,i,j)    
+                    j = 10
+                    x,y = 1075 + (i * 75)*width_ratio, 843 - (i * 43)*height_ratio
+                    self.hit_box_function(x,y,event, square_size, screen,i,j)
+                    
+                    
+    def hit_box_function(self, x, y, event, square_size, screen, i, j):
+        if self.remove_mode:
+            result = self.remove_piece(x, y, event, square_size, screen, i, j)
+            if result:
+                self.change_player()
+                
+
+        self.piece_action(x, y, event, square_size, screen, i, j)
+
+
+    
         
     def show_board(self):
         for i in range(11):
@@ -337,12 +390,10 @@ class Game:
                     from menu_staryinsh import menu
                     menu()
                 
-                self.hit_box(event, square_size, screen,width_ratio, height_ratio)
+                self.hit_box(event, square_size, screen)
                 
                 pygame.display.flip()
-                
-                if self.align_condition(screen):
-                    self.show_board()
+                self.align_condition(screen)
                 if self.nb_pieces_full_placed == 30:
                     self.show_board()   
                     running = False
