@@ -377,7 +377,7 @@ class Game:
         pygame.init()
         screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
         screen = pygame.display.set_mode((screen_width, screen_height))
-        pygame.display.set_caption("Menu")
+        pygame.display.set_caption("Staryinsh")
         width_ratio,height_ratio=self.ratio()
         background = pygame.image.load('constellation.jpeg')
         background = pygame.transform.scale(background, (screen_width, screen_height))
@@ -404,4 +404,3 @@ def launch_game():
     game = Game()
     game.play()
 
-launch_game()
