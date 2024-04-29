@@ -171,6 +171,7 @@ def blitz():
         screen.blit(background_screen, (0, 0))
         
         
+        
         # Displaying buttons to place them correctly on the screen
         if hover_network:
             hover(network_button, 850*width_ratio, 570*height_ratio, screen)
