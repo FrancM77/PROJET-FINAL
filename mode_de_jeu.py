@@ -15,12 +15,15 @@ class ModeDeJeu:
         self.normal_button_image = pygame.transform.scale(pygame.image.load('normal_button.png'), (int(505*self.width_ratio), int(260*self.height_ratio)))
         self.blitz_button_image = pygame.transform.scale(pygame.image.load('blitz_button.png'), (int(507*self.width_ratio), int(260*self.height_ratio)))
         self.running = True
+        self.hover_normal = False
+        self.hover_blitz = False
 
     def run(self):
         while self.running:
             for event in pygame.event.get():
                 if event.type == KEYDOWN and event.key == K_ESCAPE:
-                    pygame.quit()
+                    from menu_staryinsh import menu
+                    menu()
                 elif event.type == MOUSEBUTTONDOWN:
                     if event.button == 1:
                         if 865*self.width_ratio <= event.pos[0] <= 1350*self.width_ratio and 530*self.height_ratio <= event.pos[1] <= 764*self.height_ratio:
@@ -45,6 +48,7 @@ class ModeDeJeu:
         self.hover_normal = 865*self.width_ratio <= x <= 1350*self.width_ratio and 530*self.height_ratio <= y <= 764*self.height_ratio
         self.hover_blitz = 1383*self.width_ratio <= x <= 1869*self.width_ratio and 530*self.height_ratio <= y <= 764*self.height_ratio
 
+    
     def update_button_display(self):
         if self.hover_normal:
             self.hover(self.normal_button_image, 850*self.width_ratio, 510*self.height_ratio)
@@ -109,5 +113,4 @@ class Mode:
         pygame.time.wait(20)
         self.screen.blit(img, (x,y))
 
-if __name__ == "__main__":
-    ModeDeJeu().run()
+
