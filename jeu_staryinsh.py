@@ -260,10 +260,11 @@ class Game:
     # fonction qui s'occupe des pieces sur les cotes pour compter les points
     
     def load_side_img(self,number,alpha,x,y,screen):
+        width_ratio, height_ratio = self.ratio()
         image = self.piece_image[number].convert_alpha()
         image.set_alpha(alpha)
         image = pygame.transform.scale(image, (100, 100))
-        screen.blit(image, (x, y))
+        screen.blit(image, (x*width_ratio, y*height_ratio))
         return image
     
     def display_points(self, screen):
@@ -404,3 +405,4 @@ def launch_game():
     game = Game()
     game.play()
 
+launch_game()
