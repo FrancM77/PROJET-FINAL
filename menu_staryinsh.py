@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 import carrouselle_img as rules
 import jeu_staryinsh as game
-from mode_de_jeu import mode_de_jeu
+from mode_de_jeu import ModeDeJeu
 
 pygame.init()
 
@@ -40,7 +40,7 @@ def menu():
             elif event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if 250*width_ratio <= event.pos[0] <= 1050*width_ratio and 200*height_ratio <= event.pos[1] <= 900*height_ratio:
-                        mode_de_jeu()
+                        ModeDeJeu().run()
                     if 1046*width_ratio <= event.pos[0] <= 1796*width_ratio and 200*height_ratio <= event.pos[1] <= 900*height_ratio:
                         rules.carousel()
             elif event.type == MOUSEMOTION:
