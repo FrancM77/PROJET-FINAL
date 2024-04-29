@@ -357,7 +357,12 @@ class Game:
 
         self.piece_action(x, y, event, square_size, screen, i, j)
 
-
+    def victory_condition(self):
+        if self.player_1_points == 3:
+            return True,1
+        if self.player_2_points == 3:
+            return True,2
+        return False,0
     
         
     def show_board(self):
@@ -395,8 +400,8 @@ class Game:
                 
                 pygame.display.flip()
                 self.align_condition(screen)
-                if self.nb_pieces_full_placed == 30:
-                    self.show_board()   
+                if self.victory_condition()[0]:
+                    print(f"Player {self.victory_condition()[1]} wins")  
                     running = False
         pygame.quit()
 
