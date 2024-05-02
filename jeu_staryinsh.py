@@ -304,47 +304,47 @@ class Game:
             if event.button == 1:
                 for i in range(4):
                     j = 0
-                    x,y = 697 + (i * 75)*width_ratio, 190 - (i * 43)*height_ratio
+                    x,y = (697 + (i * 75))*width_ratio, (190 - (i * 43))*height_ratio
                     self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(7):
                     j = 1
-                    x,y = 622 + (i * 75)*width_ratio, 320 - (i * 43)*height_ratio
+                    x,y = (622 + (i * 75))*width_ratio, (320 - (i * 43))*height_ratio
                     self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(8):
                     j = 2
-                    x,y = 622 + (i * 75)*width_ratio, 405 - (i * 43)*height_ratio
+                    x,y = (622 + (i * 75))*width_ratio, (405 - (i * 43))*height_ratio
                     self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(9):
                     j = 3
-                    x,y = 647 + (i * 75)*width_ratio, 495 - (i * 43)*height_ratio
+                    x,y = (647 + (i * 75))*width_ratio, (495 - (i * 43))*height_ratio
                     self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(10):
                     j = 4
-                    x,y = 622 + (i * 75)*width_ratio, 580 - (i * 43)*height_ratio
+                    x,y = (622 + (i * 75))*width_ratio, (580 - (i * 43))*height_ratio
                     self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(9):
                     j = 5
-                    x,y = 697 + (i * 75)*width_ratio, 625 - (i * 43)*height_ratio
+                    x,y = (697 + (i * 75))*width_ratio, (625 - (i * 43))*height_ratio
                     self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(10):
                     j = 6
-                    x,y = 697 + (i * 75)*width_ratio, 712 - (i * 43)*height_ratio
+                    x,y = (697 + (i * 75))*width_ratio, (712 - (i * 43))*height_ratio
                     self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(9):
                     j = 7
-                    x,y = 773 + (i * 75)*width_ratio, 755 - (i * 43)*height_ratio
+                    x,y = (773 + (i * 75))*width_ratio, (755 - (i * 43))*height_ratio
                     self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(8):
                     j = 8
-                    x,y = 848 + (i * 75)*width_ratio, 800 - (i * 43)*height_ratio
+                    x,y = (848 + (i * 75))*width_ratio, (800 - (i * 43))*height_ratio
                     self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(7):
                     j = 9
-                    x,y = 925 + (i * 75)*width_ratio, 842 - (i * 43)*height_ratio
+                    x,y = (925 + (i * 75))*width_ratio, (842 - (i * 43))*height_ratio
                     self.hit_box_function(x,y,event, square_size, screen,i,j)
                 for i in range(4):
                     j = 10
-                    x,y = 1075 + (i * 75)*width_ratio, 843 - (i * 43)*height_ratio
+                    x,y = (1075 + (i * 75))*width_ratio, (843 - (i * 43))*height_ratio
                     self.hit_box_function(x,y,event, square_size, screen,i,j)
                     
                     
