@@ -15,6 +15,7 @@ class Game:
                     ['N', 'N', 'N', 'N', 0 ,0, 0 ,0, 0 ,0 ,0],
                     ['N', 'N' ,'N', 'N', 'N' ,'N' ,0 ,0, 0 ,0, 'N']]
         
+        self.is_align = False
         self.player = 1
         self.nb_pieces_placed_depart = 0
         self.nb_pieces_full_placed = 0
@@ -135,7 +136,7 @@ class Game:
             return False
 
 
-    def align_condition(self,screen):
+    def align_condition(self, screen):
         temp = None
         for j in range(11):
             for i in range(10):
@@ -175,12 +176,13 @@ class Game:
             else:
                 self.player_2_points += 1
             self.remove_mode = True
+            self.is_align = True
             return True
         
         self.display_points(screen)
         return False
 
-    
+
     def piece_action(self, x, y, event, square_size, screen, i, j):
         if self.nb_pieces_placed_depart < 4:
             return self.place_first_piece(x, y, event, square_size, screen, i, j)
@@ -196,7 +198,11 @@ class Game:
                 self.change_player()
                 self.placed_second_piece, self.previous_position = self.place_second_piece(x, y,event, square_size, screen, i, j)
 
+        if self.is_align==True :  
+            self.remove_mode = True  
+
         return False
+
 
     def remove_piece(self, x, y, event, square_size, screen, i, j):
         if self.remove_mode and x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
@@ -206,6 +212,7 @@ class Game:
                 self.board[j][i] = 0
                 self.display_piece(screen)
                 self.remove_mode = False
+                self.is_align = False
                 self.change_player()
                 return True
         return False
@@ -353,8 +360,8 @@ class Game:
             result = self.remove_piece(x, y, event, square_size, screen, i, j)
             if result:
                 self.change_player()
-                
-
+            else:
+                return
         self.piece_action(x, y, event, square_size, screen, i, j)
 
     def victory_condition(self):
@@ -379,6 +386,15 @@ class Game:
         return width_ratio, height_ratio    
     
     
+    def display_info(self, screen):
+        screen.fill((0, 0, 0), (0, 0, 300, 30))
+
+        font = pygame.font.SysFont(None, 24)
+
+        player_text = font.render(f"Tour du joueur {self.player}", True, (255, 255, 255))
+        screen.blit(player_text, (10, 10))
+
+    
     def play(self):
         pygame.init()
         screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
@@ -400,6 +416,7 @@ class Game:
                 
                 pygame.display.flip()
                 self.align_condition(screen)
+                self.display_info(screen)
                 if self.victory_condition()[0]:
                     print(f"Player {self.victory_condition()[1]} wins")  
                     running = False
