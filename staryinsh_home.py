@@ -1,8 +1,7 @@
 import pygame
 from pygame.locals import *
-import carrouselle_img as rules
-import jeu_staryinsh as game
-from mode_de_jeu import ModeDeJeu
+import rules as rules
+from gamemode import GameMode
 
 pygame.init()
 
@@ -13,15 +12,15 @@ def menu():
     pygame.display.set_caption("Menu")
 
     # Loading the background image
-    background_screen = pygame.image.load('background.jpeg')
+    background_screen = pygame.image.load('images/background.jpeg')
     background_screen = pygame.transform.scale(background_screen, (screen_width, screen_height))
     
     width_ratio = screen_width / 2048
     height_ratio = screen_height / 1152
     
     # Loading the images
-    start_button_image = pygame.image.load('jouer.jpg')
-    rules_button_image = pygame.image.load('regle.jpg')
+    start_button_image = pygame.image.load('images/play.jpg')
+    rules_button_image = pygame.image.load('images/rules.jpg')
     
     # Resizing the images
     start_button_image = pygame.transform.scale(start_button_image, (800*width_ratio, 700*height_ratio))
@@ -40,9 +39,9 @@ def menu():
             elif event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if 250*width_ratio <= event.pos[0] <= 1050*width_ratio and 200*height_ratio <= event.pos[1] <= 900*height_ratio:
-                        ModeDeJeu().run()
+                        GameMode().run()
                     if 1046*width_ratio <= event.pos[0] <= 1796*width_ratio and 200*height_ratio <= event.pos[1] <= 900*height_ratio:
-                        rules.carousel()
+                        rules.rules()
             elif event.type == MOUSEMOTION:
                 x, y = event.pos
                 hover_start = 250*width_ratio <= x <= 250*width_ratio + start_button_image.get_width() and 200*height_ratio <= y <= 200*height_ratio + start_button_image.get_height()

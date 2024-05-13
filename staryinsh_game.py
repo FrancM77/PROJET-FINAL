@@ -24,7 +24,10 @@ class Game:
         self.remove_mode = False
         self.placed_second_piece = False
         self.placed_third_piece = False
-    
+        if self.mode == "normal":
+            self.nb_circle = 3
+        elif self.mode == "blitz":
+            self.nb_circle = 1   
     
     def load_pieces(self):
         self.piece_image = {}
@@ -140,30 +143,32 @@ class Game:
                         for k in range(5):
                             self.board[j][i + k] = 0
                             self.display_piece(screen)
-                        self.update_points()
+                        self.change_player()
+                        self.remove_mode = True
                         return True
                     # Vertical (|)
                     if j <= 6 and self.align_check(i, j, 0, 1):
                         for k in range(5):
                             self.board[j + k][i] = 0
                             self.display_piece(screen)
-                        self.update_points()
+                        self.change_player()
+                        self.remove_mode = True
                         return True
                     # Diagonal utile (\)
                     if j <= 6 and i <= 6 and self.align_check(i, j, 1, 1):
                         for k in range(5):
                             self.board[j + k][i + k] = 0
                             self.display_piece(screen)
-                        self.update_points()
+                        self.change_player()
+                        self.remove_mode = True
                         return True
         return False
 
     def update_points(self):
-        if self.player == 2:
+        if self.player == 1:
             self.player_1_points += 1
         else:
             self.player_2_points += 1
-        self.remove_mode = True
         self.change_player()
 
 
@@ -192,10 +197,9 @@ class Game:
             if self.board[j][i] == self.player:
                 self.board[j][i] = 0
                 self.display_piece(screen)
-                self.remove_mode = False
-                self.is_align = False
-                self.change_player()
+                self.update_points()
                 self.display_points(screen)
+                self.remove_mode = False
                 self.placed_second_piece = False
                 self.placed_third_piece = False
                 self.previous_position = None
@@ -240,7 +244,7 @@ class Game:
             self.display_piece_action((650+(i*75)-31)*self.width_ratio, (1130-(i*43)-35)*self.height_ratio,screen,i,j)
     
     def load_background(self, screen):
-        background = pygame.image.load('constellation.jpeg')
+        background = pygame.image.load('images/board.jpeg')
         screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
         background = pygame.transform.scale(background, (screen_width, screen_height))
         screen.blit(background, (0, 0))     
@@ -262,7 +266,7 @@ class Game:
             self.load_side_img(2,256,1940,(1050-(i*95)),screen)
                     
     def display_side_piece_start(self,screen):
-        for i in range(3):
+        for i in range(self.nb_circle):
             self.load_side_img(1,2,10,(10+(i*95)),screen)
             self.load_side_img(2,3,1940,(1050-(i*95)),screen)
             
@@ -336,14 +340,10 @@ class Game:
                     self.piece_action(x,y,event, square_size, screen,i,j)
 
 
-    def victory_condition(self):
-        if self.mode == "normal":
-            nb = 3
-        elif self.mode == "blitz":
-            nb=1            
-        if self.player_1_points == nb:
+    def victory_condition(self):         
+        if self.player_1_points == self.nb_circle:
             return True,1
-        if self.player_2_points == nb:
+        if self.player_2_points == self.nb_circle:
             return True,2
         return False,None
     
@@ -358,15 +358,16 @@ class Game:
     
     
     def display_info(self, screen, font):
+        RGB = (235,117,141) if self.player == 1 else (84, 181, 97)
         while self.nb_pieces_placed_depart < 6:
-            text = font.render(f"Joueur {self.player}, veuillez placer un de vos 5 pions", True, (255, 255, 255))
-            screen.blit(text, (750*self.width_ratio, 900*self.height_ratio))
+            text = font.render(f"Joueur {self.player}, veuillez placer un de vos 5 pions", True, RGB)
+            screen.blit(text, (550*self.width_ratio, 900*self.height_ratio))
             return
         if self.remove_mode:
-            remove_text = font.render(f"Joueur {self.player}, veuillez supprimer un de vos pions", True, (184, 63, 63))
+            remove_text = font.render(f"Joueur {self.player}, veuillez supprimer un de vos pions", True, RGB)
             screen.blit(remove_text, (550*self.width_ratio, 900*self.height_ratio))
             return 
-        player_text = font.render(f"C'est au tour du joueur {self.player}", True, (255, 255, 255))
+        player_text = font.render(f"C'est au tour du joueur {self.player}", True, RGB)
         screen.blit(player_text, (750*self.width_ratio, 900*self.height_ratio)) 
 
 
@@ -378,7 +379,7 @@ class Game:
         pygame.display.set_caption("Staryinsh")
         self.width_ratio = screen_width / 2048
         self.height_ratio = screen_height / 1152
-        background = pygame.image.load('constellation.jpeg')
+        background = pygame.image.load('images/board.jpeg')
         background = pygame.transform.scale(background, (screen_width, screen_height))
         running = True
         screen.blit(background, (0, 0))
@@ -389,7 +390,7 @@ class Game:
         while running:
             for event in pygame.event.get():
                 if event.type == KEYDOWN and event.key == K_ESCAPE:
-                    from menu_staryinsh import menu
+                    from staryinsh_home import menu
                     menu()
                 
                 self.hit_box(event, square_size, screen)
@@ -399,7 +400,7 @@ class Game:
                 self.display_info(screen,space_font)
                 if self.victory_condition()[0]:
                     print(f"le joueur {self.victory_condition()[1]} a gagné")
-                    from ecran_victoire import victory_screen
+                    from victory_screen import victory_screen
                     victory_screen(self.victory_condition()[1],self.mode,self.type)
                     running = False
         pygame.quit()
@@ -408,4 +409,3 @@ class Game:
 def launch_game(mode,type_game):
     game = Game(mode,type_game)
     game.play()
-

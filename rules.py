@@ -3,21 +3,21 @@ from pygame.locals import *
 import os
 
 def load_images(screen_width, screen_height):
-    images_folder = 'images'
+    images_folder = 'img_rules'
     image_files = os.listdir(images_folder)
     images = [pygame.image.load(os.path.join(images_folder, img)) for img in image_files]
     images = [pygame.transform.scale(img, (screen_width, screen_height)) for img in images]
     return images
 
-def carousel():
+def rules():
     pygame.init()
     
     screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
     screen = pygame.display.set_mode((screen_width, screen_height))
 
-    pygame.display.set_caption("Image Carousel")
+    pygame.display.set_caption("Rules")
     
-    rule_image = pygame.image.load('images/regle1.jpg')
+    rule_image = pygame.image.load('img_rules/rules1.jpg')
     rule_image = pygame.transform.scale(rule_image, (screen_width, screen_height))
     screen.blit(rule_image, (0, 0))
     pygame.display.flip()
@@ -34,14 +34,14 @@ def carousel():
     button_width = int(screen_width * 0.15)
     button_height = int(screen_height * 0.1)
 
-    next_button = pygame.transform.scale(pygame.image.load('next_button.png'), (button_width, button_height))
-    previous_button = pygame.transform.scale(pygame.image.load('previous_button.png'), (button_width, button_height))
+    next_button = pygame.transform.scale(pygame.image.load('images/next_button.png'), (button_width, button_height))
+    previous_button = pygame.transform.scale(pygame.image.load('images/previous_button.png'), (button_width, button_height))
 
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == KEYDOWN and event.key == K_ESCAPE:
-                from menu_staryinsh import menu
+                from staryinsh_home import menu
                 menu()
                 return
             elif event.type == MOUSEMOTION:

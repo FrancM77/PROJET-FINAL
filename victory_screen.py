@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
-import menu_staryinsh as menu
-import jeu_staryinsh as game
+import staryinsh_home as menu
+import staryinsh_game as game
 
 def victory_screen(winner,mode,type_game):
     # Initializing the window
@@ -11,17 +11,17 @@ def victory_screen(winner,mode,type_game):
 
     # Loading the background image
     if winner == 1:
-        background_screen = pygame.image.load('victoire_joueur1.jpg')
+        background_screen = pygame.image.load('images/victory_player1.jpg')
     else:
-        background_screen = pygame.image.load('victoire_joueur2.jpg')    
+        background_screen = pygame.image.load('images/victory_player2.jpg')    
     background_screen = pygame.transform.scale(background_screen, (screen_width, screen_height))
     
     width_ratio = screen_width / 2048
     height_ratio = screen_height / 1152
     
     # Loading the images
-    replay_button_image = pygame.image.load('rejouer.png')
-    back_to_home_image = pygame.image.load('retourner_accueil.png')
+    replay_button_image = pygame.image.load('images/replay.png')
+    back_to_home_image = pygame.image.load('images/back_to_home.png')
     
     # Resizing the images
     replay_button_image = pygame.transform.scale(replay_button_image, (315*width_ratio, 150*height_ratio))

@@ -10,7 +10,7 @@ def start():
     pygame.display.set_caption("Start")
 
     # Loading the background image
-    background_screen = pygame.image.load('start.jpg')
+    background_screen = pygame.image.load('images/start.jpg')
     background_screen = pygame.transform.scale(background_screen, (screen_width, screen_height))
     
     running=True 
@@ -20,7 +20,7 @@ def start():
                 running = False
             keys = pygame.key.get_pressed()
             if any(keys):
-                from menu_staryinsh import menu
+                from staryinsh_home import menu
                 menu()
         screen.blit(background_screen, (0, 0))
         pygame.display.flip()
