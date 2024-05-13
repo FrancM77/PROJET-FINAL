@@ -89,7 +89,7 @@ class Mode:
                         if 860*self.width_ratio <= event.pos[0] <= 1355*self.width_ratio and 587*self.height_ratio <= event.pos[1] <= 829*self.height_ratio:
                             launch_game(self.mode, "network")
                         if 1380*self.width_ratio <= event.pos[0] <= 1875*self.width_ratio and 587*self.height_ratio <= event.pos[1] <= 829*self.height_ratio:
-                            launch_game(self.mode, "ai")
+                            launch_game(self.mode, "AI")
                 elif event.type == MOUSEMOTION:
                     hover_network = 855*self.width_ratio <= event.pos[0] <= 855*self.width_ratio + self.network_button.get_width() and 570*self.height_ratio <= event.pos[1] <= 570*self.height_ratio + self.network_button.get_height()
                     hover_ia = 1365*self.width_ratio <= event.pos[0] <= 1365*self.width_ratio + self.ia_button.get_width() and 570*self.height_ratio <= event.pos[1] <= 570*self.height_ratio + self.ia_button.get_height()

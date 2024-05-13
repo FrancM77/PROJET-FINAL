@@ -1,4 +1,5 @@
 import pygame
+import random
 from pygame.locals import *
 
 class Game:
@@ -360,15 +361,28 @@ class Game:
     def display_info(self, screen, font):
         RGB = (235,117,141) if self.player == 1 else (84, 181, 97)
         while self.nb_pieces_placed_depart < 6:
-            text = font.render(f"Joueur {self.player}, veuillez placer un de vos 5 pions", True, RGB)
-            screen.blit(text, (550*self.width_ratio, 900*self.height_ratio))
+            if self.type == "AI":
+                text = font.render(f"Veuillez placer un de vos 5 pions", True, RGB)
+                screen.blit(text, (650*self.width_ratio, 900*self.height_ratio))
+            else:
+                text = font.render(f"Joueur {self.player}, veuillez placer un de vos 5 pions", True, RGB)
+                screen.blit(text, (550*self.width_ratio, 900*self.height_ratio))
+            
             return
         if self.remove_mode:
-            remove_text = font.render(f"Joueur {self.player}, veuillez supprimer un de vos pions", True, RGB)
-            screen.blit(remove_text, (550*self.width_ratio, 900*self.height_ratio))
+            if self.type == "AI":
+                remove_text = font.render(f"Veuillez supprimer un de vos pions", True, RGB)
+                screen.blit(remove_text, (650*self.width_ratio, 900*self.height_ratio))
+            else:
+                remove_text = font.render(f"Joueur {self.player}, veuillez supprimer un de vos pions", True, RGB)
+                screen.blit(remove_text, (550*self.width_ratio, 900*self.height_ratio))
             return 
-        player_text = font.render(f"C'est au tour du joueur {self.player}", True, RGB)
-        screen.blit(player_text, (750*self.width_ratio, 900*self.height_ratio)) 
+        if self.type == "AI":
+            player_text = font.render(f"C'est à votre tour", True, RGB)
+            screen.blit(player_text, (800*self.width_ratio, 900*self.height_ratio)) 
+        else:
+            player_text = font.render(f"C'est au tour du joueur {self.player}", True, RGB)
+            screen.blit(player_text, (750*self.width_ratio, 900*self.height_ratio)) 
 
 
     
@@ -387,13 +401,21 @@ class Game:
         space_font= pygame.font.Font("./font/SpaceMono-Bold.ttf", 36)
         self.load_pieces()
         self.display_piece(screen)
+        if self.type == "AI":
+            from game_ia import AI
+            ai = AI(self)
         while running:
             for event in pygame.event.get():
                 if event.type == KEYDOWN and event.key == K_ESCAPE:
                     from staryinsh_home import menu
                     menu()
-                
-                self.hit_box(event, square_size, screen)
+                if self.player == 2 and self.type == "AI":
+                    if self.player == 1 :
+                        self.hit_box(event, square_size, screen)
+                    else:
+                        ai.play(screen)
+                else:
+                    self.hit_box(event, square_size, screen)
                 
                 pygame.display.flip()
                 self.align_condition(screen)
