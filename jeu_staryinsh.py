@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 
 class Game:
-    def __init__(self):
+    def __init__(self,mode,type_game):
         self.board= [['N', 0, 0 ,0 ,0, 'N', 'N' ,'N', 'N' ,'N', 'N'],
                     [0, 0, 0 ,0, 0 ,0 ,0, 'N', 'N' ,'N', 'N'],
                     [0, 0 ,0 ,0 ,0, 0, 0 ,0, 'N', 'N' ,'N'] ,
@@ -15,6 +15,8 @@ class Game:
                     ['N', 'N', 'N', 'N', 0 ,0, 0 ,0, 0 ,0 ,0],
                     ['N', 'N' ,'N', 'N', 'N' ,'N' ,0 ,0, 0 ,0, 'N']]
         
+        self.mode = mode
+        self.type = type_game
         self.player = 1
         self.nb_pieces_placed_depart = 0
         self.player_1_points = 0 
@@ -22,11 +24,13 @@ class Game:
         self.remove_mode = False
         self.placed_second_piece = False
         self.placed_third_piece = False
+    
+    
+    def load_pieces(self):
         self.piece_image = {}
         for i in range(1,7):
-            ratio_height , ratio_len = self.ratio()
             self.piece_image[i] = pygame.image.load(f'./pion/pion{i}.png')
-            self.piece_image[i] = pygame.transform.scale(self.piece_image[i], (60*ratio_height, 60*ratio_len))
+            self.piece_image[i] = pygame.transform.scale(self.piece_image[i], (60*self.height_ratio, 60*self.width_ratio))
 
     def change_player(self):
         if self.player == 1:
@@ -168,7 +172,7 @@ class Game:
         if self.remove_mode:
             self.remove_piece(x, y, event, square_size, screen, i, j)
             return False
-        if self.nb_pieces_placed_depart < 4:
+        if self.nb_pieces_placed_depart < 6:
             return self.place_first_piece(x, y, event, square_size, screen, i, j)
         else:
             if self.placed_second_piece:
@@ -201,40 +205,39 @@ class Game:
 
     def display_piece(self,screen):
         self.load_background(screen)
-        width_ratio, height_ratio  = self.ratio()
         for i in range(1,5):
             j=0
-            self.display_piece_action((649+(i*75)-31)*width_ratio, (265-(i*43)-35)*height_ratio,screen,i,j)
+            self.display_piece_action((649+(i*75)-31)*self.width_ratio, (265-(i*43)-35)*self.height_ratio,screen,i,j)
         for i in range(7):
             j=1
-            self.display_piece_action((649+(i*75)-31)*width_ratio, (345-(i*43)-35)*height_ratio,screen,i,j)
+            self.display_piece_action((649+(i*75)-31)*self.width_ratio, (345-(i*43)-35)*self.height_ratio,screen,i,j)
         for i in range(8):
             j=2
-            self.display_piece_action((649+(i*75)-31)*width_ratio, (435-(i*43)-35)*height_ratio,screen,i,j)
+            self.display_piece_action((649+(i*75)-31)*self.width_ratio, (435-(i*43)-35)*self.height_ratio,screen,i,j)
         for i in range(9):
             j=3
-            self.display_piece_action((647+(i*75)-31)*width_ratio, (520-(i*43)-35)*height_ratio,screen,i,j)    
+            self.display_piece_action((647+(i*75)-31)*self.width_ratio, (520-(i*43)-35)*self.height_ratio,screen,i,j)    
         for i in range(10):
             j=4
-            self.display_piece_action((647+(i*75)-31)*width_ratio, (605-(i*43)-35)*height_ratio,screen,i,j)
+            self.display_piece_action((647+(i*75)-31)*self.width_ratio, (605-(i*43)-35)*self.height_ratio,screen,i,j)
         for i in range(1,10):
             j=5
-            self.display_piece_action((649+(i*75)-31)*width_ratio, (695-(i*43)-35)*height_ratio,screen,i,j)
+            self.display_piece_action((649+(i*75)-31)*self.width_ratio, (695-(i*43)-35)*self.height_ratio,screen,i,j)
         for i in range(1,11): 
             j=6
-            self.display_piece_action((649+(i*75)-31)*width_ratio, (782-(i*43)-35)*height_ratio,screen,i,j)
+            self.display_piece_action((649+(i*75)-31)*self.width_ratio, (782-(i*43)-35)*self.height_ratio,screen,i,j)
         for i in range(2,11):
             j=7
-            self.display_piece_action((649+(i*75)-31)*width_ratio, (870-(i*43)-35)*height_ratio,screen,i,j)
+            self.display_piece_action((649+(i*75)-31)*self.width_ratio, (870-(i*43)-35)*self.height_ratio,screen,i,j)
         for i in range(3,11):
             j=8
-            self.display_piece_action((650+(i*75)-31)*width_ratio, (957-(i*43)-35)*height_ratio,screen,i,j)
+            self.display_piece_action((650+(i*75)-31)*self.width_ratio, (957-(i*43)-35)*self.height_ratio,screen,i,j)
         for i in range(4,11):
             j=9
-            self.display_piece_action((650+(i*75)-31)*width_ratio, (1043-(i*43)-35)*height_ratio,screen,i,j)
+            self.display_piece_action((650+(i*75)-31)*self.width_ratio, (1043-(i*43)-35)*self.height_ratio,screen,i,j)
         for i in range(5,11):
             j=10
-            self.display_piece_action((650+(i*75)-31)*width_ratio, (1130-(i*43)-35)*height_ratio,screen,i,j)
+            self.display_piece_action((650+(i*75)-31)*self.width_ratio, (1130-(i*43)-35)*self.height_ratio,screen,i,j)
     
     def load_background(self, screen):
         background = pygame.image.load('constellation.jpeg')
@@ -246,23 +249,22 @@ class Game:
     # fonction qui s'occupe des pieces sur les cotes pour compter les points
     
     def load_side_img(self,number,alpha,x,y,screen):
-        width_ratio, height_ratio = self.ratio()
         image = self.piece_image[number].convert_alpha()
         image.set_alpha(alpha)
-        image = pygame.transform.scale(image, (100, 100))
-        screen.blit(image, (x*width_ratio, y*height_ratio))
+        image = pygame.transform.scale(image, (100*self.width_ratio, 100*self.height_ratio))
+        screen.blit(image, (x*self.width_ratio, y*self.height_ratio))
         return image
     
     def display_points(self, screen):
         for i in range(self.player_1_points):
-            self.load_side_img(1,256,10,10+(i*95),screen)
+            self.load_side_img(1,256,10,(10+(i*95)),screen)
         for i in range(self.player_2_points):
-            self.load_side_img(2,256,1940,1050-(i*95),screen)
+            self.load_side_img(2,256,1940,(1050-(i*95)),screen)
                     
     def display_side_piece_start(self,screen):
         for i in range(3):
-            self.load_side_img(1,2,10,10+(i*95),screen)
-            self.load_side_img(2,3,1940,1050-(i*95),screen)
+            self.load_side_img(1,2,10,(10+(i*95)),screen)
+            self.load_side_img(2,3,1940,(1050-(i*95)),screen)
             
     # fin de gestion des pieces sur les cotes
     
@@ -286,61 +288,65 @@ class Game:
 
 
     def hit_box(self, event, square_size, screen):
-        width_ratio, height_ratio = self.ratio()
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
                 for i in range(4):
                     j = 0
-                    x,y = (697 + (i * 75))*width_ratio, (190 - (i * 43))*height_ratio
+                    x,y = (697 + (i * 75))*self.width_ratio, (190 - (i * 43))*self.height_ratio
                     self.piece_action(x,y,event, square_size, screen,i,j)
                 for i in range(7):
                     j = 1
-                    x,y = (622 + (i * 75))*width_ratio, (320 - (i * 43))*height_ratio
+                    x,y = (622 + (i * 75))*self.width_ratio, (320 - (i * 43))*self.height_ratio
                     self.piece_action(x,y,event, square_size, screen,i,j)
                 for i in range(8):
                     j = 2
-                    x,y = (622 + (i * 75))*width_ratio, (405 - (i * 43))*height_ratio
+                    x,y = (622 + (i * 75))*self.width_ratio, (405 - (i * 43))*self.height_ratio
                     self.piece_action(x,y,event, square_size, screen,i,j)
                 for i in range(9):
                     j = 3
-                    x,y = (647 + (i * 75))*width_ratio, (495 - (i * 43))*height_ratio
+                    x,y = (647 + (i * 75))*self.width_ratio, (495 - (i * 43))*self.height_ratio
                     self.piece_action(x,y,event, square_size, screen,i,j)
                 for i in range(10):
                     j = 4
-                    x,y = (622 + (i * 75))*width_ratio, (580 - (i * 43))*height_ratio
+                    x,y = (622 + (i * 75))*self.width_ratio, (580 - (i * 43))*self.height_ratio
                     self.piece_action(x,y,event, square_size, screen,i,j)
                 for i in range(9):
                     j = 5
-                    x,y = (697 + (i * 75))*width_ratio, (625 - (i * 43))*height_ratio
+                    x,y = (697 + (i * 75))*self.width_ratio, (625 - (i * 43))*self.height_ratio
                     self.piece_action(x,y,event, square_size, screen,i,j)
                 for i in range(10):
                     j = 6
-                    x,y = (697 + (i * 75))*width_ratio, (712 - (i * 43))*height_ratio
+                    x,y = (697 + (i * 75))*self.width_ratio, (712 - (i * 43))*self.height_ratio
                     self.piece_action(x,y,event, square_size, screen,i,j)
                 for i in range(9):
                     j = 7
-                    x,y = (773 + (i * 75))*width_ratio, (755 - (i * 43))*height_ratio
+                    x,y = (773 + (i * 75))*self.width_ratio, (755 - (i * 43))*self.height_ratio
                     self.piece_action(x,y,event, square_size, screen,i,j)
                 for i in range(8):
                     j = 8
-                    x,y = (848 + (i * 75))*width_ratio, (800 - (i * 43))*height_ratio
+                    x,y = (848 + (i * 75))*self.width_ratio, (800 - (i * 43))*self.height_ratio
                     self.piece_action(x,y,event, square_size, screen,i,j)
                 for i in range(7):
                     j = 9
-                    x,y = (925 + (i * 75))*width_ratio, (842 - (i * 43))*height_ratio
+                    x,y = (925 + (i * 75))*self.width_ratio, (842 - (i * 43))*self.height_ratio
                     self.piece_action(x,y,event, square_size, screen,i,j)
                 for i in range(4):
                     j = 10
-                    x,y = (1075 + (i * 75))*width_ratio, (843 - (i * 43))*height_ratio
+                    x,y = (1075 + (i * 75))*self.width_ratio, (843 - (i * 43))*self.height_ratio
                     self.piece_action(x,y,event, square_size, screen,i,j)
 
 
     def victory_condition(self):
-        if self.player_1_points == 3:
+        if self.mode == "normal":
+            nb = 3
+        elif self.mode == "blitz":
+            nb=1            
+        if self.player_1_points == nb:
             return True,1
-        if self.player_2_points == 3:
+        if self.player_2_points == nb:
             return True,2
-        return False,0
+        return False,None
+    
     
         
     def show_board(self):
@@ -348,22 +354,20 @@ class Game:
             for j in range(10):
                 print(self.board[i][j], end=" ")
             print()
-    
-    def ratio(self):
-        pygame.init()
-        screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
-        width_ratio = screen_width / 2048
-        height_ratio = screen_height / 1152
-        return width_ratio, height_ratio    
+
     
     
     def display_info(self, screen, font):
+        while self.nb_pieces_placed_depart < 6:
+            text = font.render(f"Joueur {self.player}, veuillez placer un de vos 5 pions", True, (255, 255, 255))
+            screen.blit(text, (750*self.width_ratio, 900*self.height_ratio))
+            return
         if self.remove_mode:
             remove_text = font.render(f"Joueur {self.player}, veuillez supprimer un de vos pions", True, (184, 63, 63))
-            screen.blit(remove_text, (550, 900))
+            screen.blit(remove_text, (550*self.width_ratio, 900*self.height_ratio))
             return 
         player_text = font.render(f"C'est au tour du joueur {self.player}", True, (255, 255, 255))
-        screen.blit(player_text, (750, 900))
+        screen.blit(player_text, (750*self.width_ratio, 900*self.height_ratio)) 
 
 
     
@@ -372,13 +376,15 @@ class Game:
         screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
         screen = pygame.display.set_mode((screen_width, screen_height))
         pygame.display.set_caption("Staryinsh")
-        width_ratio,height_ratio=self.ratio()
+        self.width_ratio = screen_width / 2048
+        self.height_ratio = screen_height / 1152
         background = pygame.image.load('constellation.jpeg')
         background = pygame.transform.scale(background, (screen_width, screen_height))
         running = True
         screen.blit(background, (0, 0))
-        square_size = 50*width_ratio
+        square_size = 50*self.width_ratio
         space_font= pygame.font.Font("./font/SpaceMono-Bold.ttf", 36)
+        self.load_pieces()
         self.display_piece(screen)
         while running:
             for event in pygame.event.get():
@@ -392,13 +398,14 @@ class Game:
                 self.align_condition(screen)
                 self.display_info(screen,space_font)
                 if self.victory_condition()[0]:
-                    print(f"Player {self.victory_condition()[1]} wins")  
+                    print(f"le joueur {self.victory_condition()[1]} a gagné")
+                    from ecran_victoire import victory_screen
+                    victory_screen(self.victory_condition()[1],self.mode,self.type)
                     running = False
         pygame.quit()
 
 
-def launch_game():
-    game = Game()
+def launch_game(mode,type_game):
+    game = Game(mode,type_game)
     game.play()
 
-launch_game()
