@@ -17,7 +17,6 @@ class Game:
         
         self.player = 1
         self.nb_pieces_placed_depart = 0
-        self.nb_pieces_full_placed = 0
         self.player_1_points = 0 
         self.player_2_points = 0
         self.remove_mode = False
@@ -122,50 +121,46 @@ class Game:
         else:
             return False
 
-
+    def align_check(self,start_x, start_y, x, y):
+            for j in range(5):
+                if self.board[start_y + j * y][start_x + j * x] != self.board[start_y][start_x]:
+                    return False
+            return True
+        
     def align_condition(self, screen):
-        temp = None
         for j in range(11):
             for i in range(10):
-                # Horizontal (-)
-                if i <= 6:
-                    if self.board[j][i] in [3, 4]:
-                        if self.board[j][i] == self.board[j][i + 1] == self.board[j][i + 2] == self.board[j][i + 3] == self.board[j][i + 4]:
-                            for k in range(5):
-                                self.board[j][i + k] = 0
-                                self.display_piece(screen)
-                            temp = 'break'
-                            break
-
-                # Vertical (|)
-                if j <= 6:
-                    if self.board[j][i] in [3, 4]:
-                        if self.board[j][i] == self.board[j + 1][i] == self.board[j + 2][i] == self.board[j + 3][i] == self.board[j + 4][i]:
-                            for k in range(5):
-                                self.board[j + k][i] = 0
-                                self.display_piece(screen)
-                            temp = 'break'
-                            break
-
-                # Diagonal utile (\)
-                if j <= 6 and i <= 6:
-                    if self.board[j][i] in [3, 4]:
-                        if self.board[j][i] == self.board[j + 1][i + 1] == self.board[j + 2][i + 2] == self.board[j + 3][i + 3] == self.board[j + 4][i + 4]:
-                            for k in range(5):
-                                self.board[j + k][i + k] = 0 
-                                self.display_piece(screen)
-                            temp = 'break'
-                            break
-                        
-        if temp == 'break':
-            if self.player == 2:
-                self.player_1_points += 1
-            else:
-                self.player_2_points += 1
-            self.remove_mode = True
-            self.change_player()
-            return True
+                if self.board[j][i] in [3, 4]:
+                    # Horizontal (-)
+                    if i <= 6 and self.align_check(i, j, 1, 0):
+                        for k in range(5):
+                            self.board[j][i + k] = 0
+                            self.display_piece(screen)
+                        self.update_points()
+                        return True
+                    # Vertical (|)
+                    if j <= 6 and self.align_check(i, j, 0, 1):
+                        for k in range(5):
+                            self.board[j + k][i] = 0
+                            self.display_piece(screen)
+                        self.update_points()
+                        return True
+                    # Diagonal utile (\)
+                    if j <= 6 and i <= 6 and self.align_check(i, j, 1, 1):
+                        for k in range(5):
+                            self.board[j + k][i + k] = 0
+                            self.display_piece(screen)
+                        self.update_points()
+                        return True
         return False
+
+    def update_points(self):
+        if self.player == 2:
+            self.player_1_points += 1
+        else:
+            self.player_2_points += 1
+        self.remove_mode = True
+        self.change_player()
 
 
 
@@ -179,7 +174,6 @@ class Game:
             if self.placed_second_piece:
                 self.placed_third_piece = self.place_third_piece(x, y, event, square_size, screen, i, j)
                 if self.placed_third_piece:
-                    self.nb_pieces_full_placed += 1
                     self.placed_second_piece = False
                     self.previous_position = None   
             else:
@@ -275,6 +269,7 @@ class Game:
     
     def display_piece_action(self, x2, y2, screen, i, j):
         self.display_side_piece_start(screen)
+        self.display_points(screen)
         if self.board[j][i] == 1:
             screen.blit(self.piece_image[1], (x2, y2))
         elif self.board[j][i] == 2:
@@ -369,8 +364,6 @@ class Game:
             return 
         player_text = font.render(f"C'est au tour du joueur {self.player}", True, (255, 255, 255))
         screen.blit(player_text, (750, 900))
-        
-        
 
 
     
