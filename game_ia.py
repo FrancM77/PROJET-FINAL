@@ -11,7 +11,7 @@ class AI:
 
     def place_first_piece(self, screen):
         while True:
-            j, i = random.randint(0, 10), random.randint(0, 10)
+            i, j = random.randint(0, 10), random.randint(0, 10)
             if self.game.board[j][i] == 0:
                 break
         self.game.board[j][i] = 2
