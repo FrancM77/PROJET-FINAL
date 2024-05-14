@@ -80,6 +80,7 @@ class Game:
         if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
             i += self.recover_offset(j)
             if self.is_valid_move(previous_i, previous_j, i, j) and self.board[j][i] == 0:
+                self.flip_pieces(previous_i, previous_j, i, j)
                 self.board[j][i] = 1 if self.player == 1 else 2
                 self.board[previous_j][previous_i] = 3 if self.player == 1 else 4
                 self.display_piece(screen)
@@ -95,20 +96,12 @@ class Game:
             for y in range(min(start_y, end_y) + 1, max(start_y, end_y)):
                 if self.board[y][start_x] in [1, 2]:  # Pions 1 et 2
                     return False
-                elif self.board[y][start_x] == 3:
-                    self.board[y][start_x] = 4  # Retournement du pion 3 en pion 4
-                elif self.board[y][start_x] == 4:
-                    self.board[y][start_x] = 3  # Retournement du pion 4 en pion 3
             return True
         elif start_y == end_y:  # ligne (-)
             # Vérifier les pions en chemin
             for x in range(min(start_x, end_x) + 1, max(start_x, end_x)):
                 if self.board[start_y][x] in [1, 2]:  # Pions 1 et 2
                     return False
-                elif self.board[start_y][x] == 3:
-                    self.board[start_y][x] = 4  # Retournement du pion 3 en pion 4
-                elif self.board[start_y][x] == 4:
-                    self.board[start_y][x] = 3  # Retournement du pion 4 en pion 3
             return True
         elif start_x - end_x == start_y - end_y:  # Diagonal utile (\)
             # Vérifier les pions en chemin
@@ -121,13 +114,41 @@ class Game:
                 y = min_y + i
                 if self.board[y][x] in [1, 2]:  # Pions 1 et 2
                     return False
-                elif self.board[y][x] == 3:
-                    self.board[y][x] = 4  # Retournement du pion 3 en pion 4
-                elif self.board[y][x] == 4:
-                    self.board[y][x] = 3  # Retournement du pion 4 en pion 3
             return True
         else:
             return False
+
+    def flip_pieces(self, start_x, start_y, end_x, end_y):
+        if start_x == end_x:  # colonne (|)
+            # Retourner les pions
+            for y in range(min(start_y, end_y) + 1, max(start_y, end_y)):
+                if self.board[y][start_x] == 3:
+                    self.board[y][start_x] = 4  # Retournement du pion 3 en pion 4
+                elif self.board[y][start_x] == 4:
+                    self.board[y][start_x] = 3  # Retournement du pion 4 en pion 3
+
+        elif start_y == end_y:  # ligne (-)
+            # Retourner les pions
+            for x in range(min(start_x, end_x) + 1, max(start_x, end_x)):
+                if self.board[start_y][x] == 3:
+                    self.board[start_y][x] = 4  # Retournement du pion 3 en pion 4
+                elif self.board[start_y][x] == 4:
+                    self.board[start_y][x] = 3  # Retournement du pion 4 en pion 3
+
+        elif start_x - end_x == start_y - end_y:  # Diagonal utile (\)
+            # Retourner les pions
+            min_x = min(start_x, end_x)
+            max_x = max(start_x, end_x)
+            min_y = min(start_y, end_y)
+            max_y = max(start_y, end_y)
+            for i in range(1, abs(start_x - end_x)):
+                x = min_x + i
+                y = min_y + i
+                if self.board[y][x] == 3:
+                    self.board[y][x] = 4  # Retournement du pion 3 en pion 4
+                elif self.board[y][x] == 4:
+                    self.board[y][x] = 3  # Retournement du pion 4 en pion 3
+
 
     def align_check(self,start_x, start_y, x, y):
             for j in range(5):

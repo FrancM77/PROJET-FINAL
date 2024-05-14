@@ -30,24 +30,25 @@ class AI:
                 return True, (i, j)
 
     def place_third_piece(self, screen):
-        if self.previous_position is None:
-            return
+        previous_i, previous_j = self.previous_position
         while True:
             i, j = random.randint(0, 10), random.randint(0, 10)
-            if self.game.is_valid_move(self.previous_position[0], self.previous_position[1], i, j):
-                if self.game.board[j][i] == 0 and self.game.board[j][i] != 'N':
-                    pygame.time.delay(500)
-                    self.game.board[j][i] = 2
-                    self.game.board[self.previous_position[1]][self.previous_position[0]] = 4
-                    self.game.display_piece(screen)
-                    self.game.change_player()
-                    pygame.display.flip()
-                    return True
-
+            if self.game.is_valid_move(previous_i, previous_j, i, j) and self.game.board[j][i] == 0 and self.game.board[j][i] != 'N': 
+                self.game.flip_pieces(previous_i, previous_j, i, j)
+                pygame.time.delay(500)
+                self.game.board[j][i] = 2
+                self.game.board[previous_j][previous_i] = 4
+                self.game.display_piece(screen)
+                self.game.change_player()
+                pygame.display.flip()
+                return True
+    
+    
     def remove_piece(self, screen):
         while True:
             i, j = random.randint(0, 10), random.randint(0, 10)
             if self.game.board[j][i] == 2:
+                pygame.time.delay(500)
                 self.game.board[j][i] = 0
                 self.game.display_piece(screen)
                 self.game.update_points()
