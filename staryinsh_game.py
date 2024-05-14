@@ -88,7 +88,7 @@ class Game:
         return False
     
     
-    
+
     def is_valid_move(self, start_x, start_y, end_x, end_y):
         if start_x == end_x:  # colonne (|)
             # Vérifier les pions en chemin
@@ -404,7 +404,10 @@ class Game:
             player_text = font.render(f"C'est au tour du joueur {self.player}", True, RGB)
             screen.blit(player_text, (750*self.width_ratio, 900*self.height_ratio)) 
 
-
+    def play_sound(self,titre):
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load(f'sounds/{titre}.mp3')
+        pygame.mixer.music.play(-1)
     
     def play(self):
         pygame.init()
@@ -421,12 +424,14 @@ class Game:
         space_font= pygame.font.Font("./font/SpaceMono-Bold.ttf", 36)
         self.load_pieces()
         self.display_piece(screen)
+        self.play_sound("game")
         if self.type == "AI":
             from game_ia import AI
             ai = AI(self)
         while running:
             for event in pygame.event.get():
                 if event.type == KEYDOWN and event.key == K_ESCAPE:
+                    self.play_sound("menu")
                     from staryinsh_home import menu
                     menu()
                 if self.player == 2 and self.type == "AI":
@@ -439,6 +444,7 @@ class Game:
                 self.display_info(screen,space_font)
                 if self.victory_condition()[0]:
                     print(f"le joueur {self.victory_condition()[1]} a gagné")
+                    self.play_sound("game_over")  
                     from victory_screen import victory_screen
                     victory_screen(self.victory_condition()[1],self.mode,self.type)
                     running = False
@@ -448,5 +454,3 @@ class Game:
 def launch_game(mode,type_game):
     game = Game(mode,type_game)
     game.play()
-
-launch_game("normal","AI")

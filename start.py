@@ -13,6 +13,9 @@ def start():
     background_screen = pygame.image.load('images/start.jpg')
     background_screen = pygame.transform.scale(background_screen, (screen_width, screen_height))
     
+    pygame.mixer.music.load('sounds/menu.mp3')
+    pygame.mixer.music.play(-1)
+    
     running=True 
     while running:
         for event in pygame.event.get():

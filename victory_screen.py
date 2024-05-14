@@ -5,6 +5,7 @@ import staryinsh_game as game
 
 def victory_screen(winner,mode,type_game):
     # Initializing the window
+    pygame.init()
     screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption("Menu")
@@ -42,6 +43,9 @@ def victory_screen(winner,mode,type_game):
                     if 550*width_ratio <= event.pos[0] <= 835*width_ratio and 852*height_ratio <= event.pos[1] <= 959*height_ratio:
                         game.launch_game(mode,type_game)
                     if 919*width_ratio <= event.pos[0] <= 1498*width_ratio and 853*height_ratio <= event.pos[1] <= 960*height_ratio:
+                        pygame.mixer.music.stop()
+                        pygame.mixer.music.load('sounds/menu.mp3')
+                        pygame.mixer.music.play(-1)
                         menu.menu()
             elif event.type == MOUSEMOTION:
                 x, y = event.pos
