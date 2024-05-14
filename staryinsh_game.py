@@ -1,5 +1,4 @@
 import pygame
-import random
 from pygame.locals import *
 
 class Game:
@@ -158,7 +157,7 @@ class Game:
         
     def align_condition(self, screen):
         for j in range(11):
-            for i in range(10):
+            for i in range(11):
                 if self.board[j][i] in [3, 4]:
                     # Horizontal (-)
                     if i <= 6 and self.align_check(i, j, 1, 0):
