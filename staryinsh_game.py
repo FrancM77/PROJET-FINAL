@@ -431,9 +431,6 @@ class Game:
                     from staryinsh_home import menu
                     menu()
                 if self.player == 2 and self.type == "AI":
-                    if self.player == 1 :
-                        self.hit_box(event, square_size, screen)
-                    else:
                         ai.play(screen)
                 else:
                     self.hit_box(event, square_size, screen)
@@ -452,3 +449,5 @@ class Game:
 def launch_game(mode,type_game):
     game = Game(mode,type_game)
     game.play()
+
+launch_game("normal","AI")
