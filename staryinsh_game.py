@@ -163,9 +163,7 @@ class Game:
 
         elif start_x - end_x == start_y - end_y:  # Diagonal utile (\)
             min_x = min(start_x, end_x)
-            max_x = max(start_x, end_x)
             min_y = min(start_y, end_y)
-            max_y = max(start_y, end_y)
             for i in range(1, abs(start_x - end_x)):
                 x = min_x + i
                 y = min_y + i
