@@ -92,7 +92,6 @@ class Game:
         return False
     
     
-
     def is_valid_move(self, start_x, start_y, end_x, end_y):
         if start_x == end_x:  # colonne (|)
             for y in range(min(start_y, end_y) + 1, max(start_y, end_y)):
@@ -141,7 +140,8 @@ class Game:
                     self.board[y][start_x] = 4 
                 elif self.board[y][start_x] == 4:
                     self.board[y][start_x] = 3  
-
+                    
+        elif start_y == end_y:  # ligne (-)
             for x in range(min(start_x, end_x) + 1, max(start_x, end_x)):
                 if self.board[start_y][x] == 3:
                     self.board[start_y][x] = 4  
