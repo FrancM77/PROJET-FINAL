@@ -465,5 +465,4 @@ class Game:
 def launch_game(mode,type_game):
     game = Game(mode,type_game)
     game.play()
-
-launch_game("blitz","AI")
+    

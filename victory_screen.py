@@ -46,8 +46,8 @@ def victory_screen(winner,mode,type_game):
                     if 919*width_ratio <= event.pos[0] <= 1498*width_ratio and 853*height_ratio <= event.pos[1] <= 960*height_ratio:
                         menu.play_button_sound()
                         pygame.mixer.music.stop()
-                        pygame.mixer.music.load('sounds/menu.mp3')
-                        pygame.mixer.music.play(-1)
+                        sound = pygame.mixer.Sound(f'sounds/game_over.mp3')
+                        sound.play()
                         menu.menu()
             elif event.type == MOUSEMOTION:
                 x, y = event.pos
