@@ -91,45 +91,58 @@ class Game:
                 return True
         return False
     
+    def verify_move_column(self, start_x, start_y, end_y,value):
+        for y in range(min(start_y, end_y) + 1, max(start_y, end_y)):
+            if self.board[y][start_x] in [1, 2]:
+                return False
+            if self.board[y][start_x] in [3, 4]:
+                for y in range(min(start_y, end_y) + 1, max(start_y, end_y)):
+                    if self.board[y][start_x] == 0 and self.board[y+value][start_x] in [3, 4] :
+                        return False
+        return True
     
-    def is_valid_move(self, start_x, start_y, end_x, end_y):
-        if start_x == end_x:  # colonne (|)
+    def verify_move_line(self, start_x, start_y, end_x,value):
+        for x in range(min(start_x, end_x) + 1, max(start_x, end_x)):
+            if self.board[start_y][x] in [1, 2]:
+                return False
+            if self.board[start_y][x] in [3, 4]:
+                for x in range(min(start_x, end_x) + 1, max(start_x, end_x)):
+                    if self.board[start_y][x] == 0 and self.board[start_y][x+value] in [3, 4]:
+                        return False
+        return True
+    
+    def verify_move_diagonal(self, start_x, start_y, end_x, end_y,value):
+        for x in range(min(start_x, end_x) + 1, max(start_x, end_x)):
             for y in range(min(start_y, end_y) + 1, max(start_y, end_y)):
-                if self.board[y][start_x] in [1, 2]:
-                    return False
-                if self.board[y][start_x] in [3, 4]:
-                    for y in range(min(start_y, end_y) + 1, max(start_y, end_y)):
-                        if self.board[y][start_x] == 0:
-                            return False
-                    return True
-            return True
-        elif start_y == end_y:  # ligne (-)
-            for x in range(min(start_x, end_x) + 1, max(start_x, end_x)):
-                if self.board[start_y][x] in [1, 2]: 
-                    return False
-                if self.board[start_y][x] in [3, 4]:
-                    for x in range(min(start_x, end_x) + 1, max(start_x, end_x)):
-                        if self.board[start_y][x] == 0:
-                            return False
-            return True
-        elif start_x - end_x == start_y - end_y:  # Diagonal utile (\)
-            min_x = min(start_x, end_x)
-            max_x = max(start_x, end_x)
-            min_y = min(start_y, end_y)
-            max_y = max(start_y, end_y)
-            for i in range(1, abs(start_x - end_x)):
-                x = min_x + i
-                y = min_y + i
-                if self.board[y][x] in [1, 2]: 
+                if self.board[y][x] in [1, 2]:
                     return False
                 if self.board[y][x] in [3, 4]:
                     for i in range(1, abs(start_x - end_x)):
-                        x = min_x + i
-                        y = min_y + i
-                        if self.board[y][x] == 0:
+                        x = min(start_x, end_x) + i
+                        y = min(start_y, end_y) + i
+                        if self.board[y][x] == 0 and self.board[y+value][x+value] in [3, 4]:
                             return False
                     return True
-            return True
+        return True
+        
+    def is_valid_move(self, start_x, start_y, end_x, end_y):
+        if start_x == end_x:  # colonne (|)
+            if start_y < end_y:
+                return self.verify_move_column(start_x, start_y, end_y,-1)
+            if start_y > end_y:
+                return self.verify_move_column(start_x, start_y, end_y,1)
+            
+        elif start_y == end_y:  # ligne (-)
+            if start_x < end_x:
+                return self.verify_move_line(start_x, start_y, end_x,-1)
+            if start_x > end_x:
+                return self.verify_move_line(start_x, start_y, end_x,1)
+            
+        elif start_x - end_x == start_y - end_y:  # Diagonal utile (\)
+            if start_x < end_x:
+                return self.verify_move_diagonal(start_x, start_y, end_x, end_y,-1)
+            if start_x > end_x:
+                return self.verify_move_diagonal(start_x, start_y, end_x, end_y,1)
         else:
             return False
 
