@@ -22,13 +22,15 @@ class GameMode:
         while self.running:
             for event in pygame.event.get():
                 if event.type == KEYDOWN and event.key == K_ESCAPE:
-                    from menu import menu
+                    from staryinsh_home import menu
                     menu()
                 elif event.type == MOUSEBUTTONDOWN:
                     if event.button == 1:
                         if 865*self.width_ratio <= event.pos[0] <= 1350*self.width_ratio and 530*self.height_ratio <= event.pos[1] <= 764*self.height_ratio:
+                            self.play_sound()
                             self.choose_mode("normal")
                         if 1383*self.width_ratio <= event.pos[0] <= 1869*self.width_ratio and 530*self.height_ratio <= event.pos[1] <= 764*self.height_ratio:
+                            self.play_sound()
                             self.choose_mode("blitz")
                 elif event.type == MOUSEMOTION:
                     self.handle_mouse_motion(event.pos)
@@ -39,6 +41,10 @@ class GameMode:
 
         pygame.quit()
 
+    def play_sound(self):
+        sound = pygame.mixer.Sound(f'sounds/button.mp3')
+        sound.play()
+    
     def choose_mode(self, mode):
         if mode == "normal" or mode == "blitz":
             Mode(self.screen, mode, self.screen_width, self.screen_height, self.width_ratio, self.height_ratio).run()
@@ -87,8 +93,10 @@ class Mode:
                 elif event.type == MOUSEBUTTONDOWN:
                     if event.button == 1:
                         if 860*self.width_ratio <= event.pos[0] <= 1355*self.width_ratio and 587*self.height_ratio <= event.pos[1] <= 829*self.height_ratio:
+                            GameMode.play_sound(self)
                             launch_game(self.mode, "network")
                         if 1380*self.width_ratio <= event.pos[0] <= 1875*self.width_ratio and 587*self.height_ratio <= event.pos[1] <= 829*self.height_ratio:
+                            GameMode.play_sound(self)
                             launch_game(self.mode, "AI")
                 elif event.type == MOUSEMOTION:
                     hover_network = 855*self.width_ratio <= event.pos[0] <= 855*self.width_ratio + self.network_button.get_width() and 570*self.height_ratio <= event.pos[1] <= 570*self.height_ratio + self.network_button.get_height()
@@ -96,18 +104,12 @@ class Mode:
 
             self.screen.blit(pygame.transform.scale(pygame.image.load(self.background_image_path), (self.screen_width, self.screen_height)), (0, 0))
             if hover_network:
-                self.hover(self.network_button, 850*self.width_ratio, 570*self.height_ratio)
+                GameMode.hover(self,self.network_button, 850*self.width_ratio, 570*self.height_ratio)
             else:
-                self.unhover(self.network_button, 855*self.width_ratio, 575*self.height_ratio)
+                GameMode.unhover(self,self.network_button, 855*self.width_ratio, 575*self.height_ratio)
             if hover_ia:
-                self.hover(self.ia_button, 1365*self.width_ratio, 570*self.height_ratio)
+                GameMode.hover(self,self.ia_button, 1365*self.width_ratio, 570*self.height_ratio)
             else:
-                self.unhover(self.ia_button, 1370*self.width_ratio, 575*self.height_ratio)
+                GameMode.unhover(self,self.ia_button, 1370*self.width_ratio, 575*self.height_ratio)
             pygame.display.flip()
 
-    def hover(self, img, x, y):
-        self.screen.blit(pygame.transform.scale(img, (img.get_width()+10, img.get_height() + 10)), (x, y))
-
-    def unhover(self, img, x, y):
-        pygame.time.wait(20)
-        self.screen.blit(img, (x,y))

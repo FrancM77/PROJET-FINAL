@@ -52,9 +52,11 @@ def rules():
             elif event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if hovering_over_next_button:
+                        play_sound()
                         current_image_index = (current_image_index + 1) % len(images)
                         carousel_x_position = -current_image_index * screen_width
                     elif hovering_over_previous_button:
+                        play_sound()
                         current_image_index = (current_image_index - 1) % len(images)
                         carousel_x_position = -current_image_index * screen_width
 
@@ -77,4 +79,7 @@ def rules():
 
     pygame.quit()
 
+def play_sound():
+    sound = pygame.mixer.Sound(f'sounds/button.mp3')
+    sound.play()
 

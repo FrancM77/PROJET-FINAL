@@ -166,6 +166,7 @@ class Game:
                             self.display_piece(screen)
                         self.change_player()
                         self.remove_mode = True
+                        self.play_sound_once("alignement")
                         return True
                     # Vertical (|)
                     if j <= 6 and self.align_check(i, j, 0, 1):
@@ -174,6 +175,7 @@ class Game:
                             self.display_piece(screen)
                         self.change_player()
                         self.remove_mode = True
+                        self.play_sound_once("alignement")
                         return True
                     # Diagonal utile (\)
                     if j <= 6 and i <= 6 and self.align_check(i, j, 1, 1):
@@ -182,6 +184,7 @@ class Game:
                             self.display_piece(screen)
                         self.change_player()
                         self.remove_mode = True
+                        self.play_sound_once("alignement")
                         return True
         return False
 
@@ -404,10 +407,14 @@ class Game:
             player_text = font.render(f"C'est au tour du joueur {self.player}", True, RGB)
             screen.blit(player_text, (750*self.width_ratio, 900*self.height_ratio)) 
 
-    def play_sound(self,titre):
+    def play_music(self,title):
         pygame.mixer.music.stop()
-        pygame.mixer.music.load(f'sounds/{titre}.mp3')
+        pygame.mixer.music.load(f'sounds/{title}.mp3')
         pygame.mixer.music.play(-1)
+        
+    def play_sound_once(self,title):
+        sound = pygame.mixer.Sound(f'sounds/{title}.mp3')
+        sound.play()
     
     def play(self):
         pygame.init()
@@ -424,14 +431,14 @@ class Game:
         space_font= pygame.font.Font("./font/SpaceMono-Bold.ttf", 36)
         self.load_pieces()
         self.display_piece(screen)
-        self.play_sound("game")
+        self.play_music("game")
         if self.type == "AI":
             from game_ia import AI
             ai = AI(self)
         while running:
             for event in pygame.event.get():
                 if event.type == KEYDOWN and event.key == K_ESCAPE:
-                    self.play_sound("menu")
+                    self.play_music("menu")
                     from staryinsh_home import menu
                     menu()
                 if self.player == 2 and self.type == "AI":
@@ -444,7 +451,7 @@ class Game:
                 self.display_info(screen,space_font)
                 if self.victory_condition()[0]:
                     print(f"le joueur {self.victory_condition()[1]} a gagné")
-                    self.play_sound("game_over")  
+                    self.play_music("game_over")  
                     from victory_screen import victory_screen
                     victory_screen(self.victory_condition()[1],self.mode,self.type)
                     running = False
@@ -454,3 +461,4 @@ class Game:
 def launch_game(mode,type_game):
     game = Game(mode,type_game)
     game.play()
+

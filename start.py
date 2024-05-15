@@ -15,7 +15,8 @@ def start():
     
     pygame.mixer.music.load('sounds/menu.mp3')
     pygame.mixer.music.play(-1)
-    
+    sound = pygame.mixer.Sound(f'sounds/welcome.mp3')
+    sound.play()
     running=True 
     while running:
         for event in pygame.event.get():

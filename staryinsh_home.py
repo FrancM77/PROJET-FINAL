@@ -39,8 +39,10 @@ def menu():
             elif event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if 250*width_ratio <= event.pos[0] <= 1050*width_ratio and 200*height_ratio <= event.pos[1] <= 900*height_ratio:
+                        play_sound()
                         GameMode().run()
                     if 1046*width_ratio <= event.pos[0] <= 1796*width_ratio and 200*height_ratio <= event.pos[1] <= 900*height_ratio:
+                        play_sound()
                         rules.rules()
             elif event.type == MOUSEMOTION:
                 x, y = event.pos
@@ -73,3 +75,6 @@ def unhover(img,x,y,screen):
     screen.blit(img, (x,y))           
 
 
+def play_sound():
+    sound = pygame.mixer.Sound(f'sounds/button.mp3')
+    sound.play()

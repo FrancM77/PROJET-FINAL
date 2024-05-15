@@ -41,8 +41,10 @@ def victory_screen(winner,mode,type_game):
             elif event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if 550*width_ratio <= event.pos[0] <= 835*width_ratio and 852*height_ratio <= event.pos[1] <= 959*height_ratio:
+                        play_sound()
                         game.launch_game(mode,type_game)
                     if 919*width_ratio <= event.pos[0] <= 1498*width_ratio and 853*height_ratio <= event.pos[1] <= 960*height_ratio:
+                        play_sound()
                         pygame.mixer.music.stop()
                         pygame.mixer.music.load('sounds/menu.mp3')
                         pygame.mixer.music.play(-1)
@@ -70,3 +72,6 @@ def victory_screen(winner,mode,type_game):
 
     pygame.quit()
               
+def play_sound():
+    sound = pygame.mixer.Sound(f'sounds/button.mp3')
+    sound.play()
