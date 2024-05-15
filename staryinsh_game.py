@@ -57,6 +57,7 @@ class Game:
                 self.board[j][i] = 1 if self.player == 1 else 2
                 self.display_piece(screen)
                 self.change_player()
+                self.play_sound_once("first_piece")
         return False
     
     def place_second_piece(self, x, y, event, square_size, screen, i, j):
@@ -65,10 +66,12 @@ class Game:
             if self.player == 1 and self.board[j][i] == 1:
                 self.board[j][i] = 5
                 self.display_piece(screen)
+                self.play_sound_once("second_piece")
                 return True, (i, j)
             if self.player == 2 and self.board[j][i] == 2:
                 self.board[j][i] = 6
                 self.display_piece(screen)
+                self.play_sound_once("second_piece")
                 return True, (i, j)
         return False, None
 
@@ -84,6 +87,7 @@ class Game:
                 self.board[previous_j][previous_i] = 3 if self.player == 1 else 4
                 self.display_piece(screen)
                 self.change_player()
+                self.play_sound_once("third_piece")
                 return True
         return False
     
@@ -462,3 +466,4 @@ def launch_game(mode,type_game):
     game = Game(mode,type_game)
     game.play()
 
+launch_game("blitz","AI")
