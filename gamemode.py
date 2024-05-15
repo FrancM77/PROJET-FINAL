@@ -19,6 +19,7 @@ class GameMode:
         self.hover_blitz = False
 
     def run(self):
+        from staryinsh_home import play_button_sound
         while self.running:
             for event in pygame.event.get():
                 if event.type == KEYDOWN and event.key == K_ESCAPE:
@@ -27,10 +28,10 @@ class GameMode:
                 elif event.type == MOUSEBUTTONDOWN:
                     if event.button == 1:
                         if 865*self.width_ratio <= event.pos[0] <= 1350*self.width_ratio and 530*self.height_ratio <= event.pos[1] <= 764*self.height_ratio:
-                            self.play_sound()
+                            play_button_sound()
                             self.choose_mode("normal")
                         if 1383*self.width_ratio <= event.pos[0] <= 1869*self.width_ratio and 530*self.height_ratio <= event.pos[1] <= 764*self.height_ratio:
-                            self.play_sound()
+                            play_button_sound()
                             self.choose_mode("blitz")
                 elif event.type == MOUSEMOTION:
                     self.handle_mouse_motion(event.pos)
@@ -40,10 +41,6 @@ class GameMode:
             pygame.display.flip()
 
         pygame.quit()
-
-    def play_sound(self):
-        sound = pygame.mixer.Sound(f'sounds/button.mp3')
-        sound.play()
     
     def choose_mode(self, mode):
         if mode == "normal" or mode == "blitz":
@@ -84,6 +81,7 @@ class Mode:
         self.ia_button = pygame.transform.scale(pygame.image.load('images/ai.png'), (int(508*width_ratio), int(263*height_ratio)))
 
     def run(self):
+        from staryinsh_home import play_button_sound
         hover_network = False
         hover_ia = False
         while True:
@@ -93,10 +91,10 @@ class Mode:
                 elif event.type == MOUSEBUTTONDOWN:
                     if event.button == 1:
                         if 860*self.width_ratio <= event.pos[0] <= 1355*self.width_ratio and 587*self.height_ratio <= event.pos[1] <= 829*self.height_ratio:
-                            GameMode.play_sound(self)
+                            play_button_sound()
                             launch_game(self.mode, "network")
                         if 1380*self.width_ratio <= event.pos[0] <= 1875*self.width_ratio and 587*self.height_ratio <= event.pos[1] <= 829*self.height_ratio:
-                            GameMode.play_sound(self)
+                            play_button_sound()
                             launch_game(self.mode, "AI")
                 elif event.type == MOUSEMOTION:
                     hover_network = 855*self.width_ratio <= event.pos[0] <= 855*self.width_ratio + self.network_button.get_width() and 570*self.height_ratio <= event.pos[1] <= 570*self.height_ratio + self.network_button.get_height()

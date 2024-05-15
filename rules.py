@@ -38,6 +38,8 @@ def rules():
     previous_button = pygame.transform.scale(pygame.image.load('images/previous_button.png'), (button_width, button_height))
 
     running = True
+    
+    from staryinsh_home import play_button_sound
     while running:
         for event in pygame.event.get():
             if event.type == KEYDOWN and event.key == K_ESCAPE:
@@ -52,11 +54,11 @@ def rules():
             elif event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if hovering_over_next_button:
-                        play_sound()
+                        play_button_sound()
                         current_image_index = (current_image_index + 1) % len(images)
                         carousel_x_position = -current_image_index * screen_width
                     elif hovering_over_previous_button:
-                        play_sound()
+                        play_button_sound()
                         current_image_index = (current_image_index - 1) % len(images)
                         carousel_x_position = -current_image_index * screen_width
 
@@ -79,7 +81,4 @@ def rules():
 
     pygame.quit()
 
-def play_sound():
-    sound = pygame.mixer.Sound(f'sounds/button.mp3')
-    sound.play()
 
