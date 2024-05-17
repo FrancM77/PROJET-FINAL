@@ -111,19 +111,16 @@ class Game:
                         return False
         return True
     
-    def verify_move_diagonal(self, start_x, start_y, end_x, end_y,value):
-        for x in range(min(start_x, end_x) + 1, max(start_x, end_x)):
-            for y in range(min(start_y, end_y) + 1, max(start_y, end_y)):
+    def verify_move_diagonal(self, start_x, start_y, end_x, end_y, value):
+        for x, y in zip(range(min(start_x, end_x) + 1, max(start_x, end_x)), range(min(start_y, end_y) + 1, max(start_y, end_y))):
                 if self.board[y][x] in [1, 2]:
                     return False
                 if self.board[y][x] in [3, 4]:
-                    for i in range(1, abs(start_x - end_x)):
-                        x = min(start_x, end_x) + i
-                        y = min(start_y, end_y) + i
+                    for x, y in zip(range(min(start_x, end_x) + 1, max(start_x, end_x)), range(min(start_y, end_y) + 1, max(start_y, end_y))):
                         if self.board[y][x] == 0 and self.board[y+value][x+value] in [3, 4]:
                             return False
-                    return True
         return True
+        
         
     def is_valid_move(self, start_x, start_y, end_x, end_y):
         if start_x == end_x:  # colonne (|)
@@ -183,34 +180,40 @@ class Game:
         for j in range(11):
             for i in range(11):
                 if self.board[j][i] in [3, 4]:
+                    player_owner = 1 if self.board[j][i] == 4 else 2
                     # Horizontal (-)
                     if i <= 6 and self.align_check(i, j, 1, 0):
-                        for k in range(5):
-                            self.board[j][i + k] = 0
+                        if player_owner == self.player:
+                            for k in range(5):
+                                self.board[j][i + k] = 0
                             self.display_piece(screen)
-                        self.change_player()
-                        self.remove_mode = True
-                        self.play_sound_once("alignement")
+                            self.change_player()
+                            self.play_sound_once("alignement")
+                            self.remove_mode = True
                         return True
                     # Vertical (|)
                     if j <= 6 and self.align_check(i, j, 0, 1):
-                        for k in range(5):
-                            self.board[j + k][i] = 0
+                        if player_owner == self.player:
+                            for k in range(5):
+                                self.board[j + k][i] = 0
                             self.display_piece(screen)
-                        self.change_player()
-                        self.remove_mode = True
-                        self.play_sound_once("alignement")
+                            self.change_player()
+                            self.play_sound_once("alignement")
+                            self.remove_mode = True
                         return True
                     # Diagonal utile (\)
                     if j <= 6 and i <= 6 and self.align_check(i, j, 1, 1):
-                        for k in range(5):
-                            self.board[j + k][i + k] = 0
+                        if player_owner == self.player:
+                            for k in range(5):
+                                self.board[j + k][i + k] = 0
                             self.display_piece(screen)
-                        self.change_player()
-                        self.remove_mode = True
-                        self.play_sound_once("alignement")
+                            self.change_player()
+                            self.play_sound_once("alignement")
+                            self.remove_mode = True
                         return True
+                            
         return False
+
 
     def update_points(self):
         if self.player == 1:
@@ -225,7 +228,7 @@ class Game:
         if self.remove_mode:
             self.remove_piece(x, y, event, square_size, screen, i, j)
             return False
-        if self.nb_pieces_placed_depart < 6:
+        if self.nb_pieces_placed_depart < 10:
             return self.place_first_piece(x, y, event, square_size, screen, i, j)
         else:
             if self.placed_second_piece:
@@ -407,7 +410,7 @@ class Game:
     
     def display_info(self, screen, font):
         RGB = (235,117,141) if self.player == 1 else (84, 181, 97)
-        while self.nb_pieces_placed_depart < 6:
+        while self.nb_pieces_placed_depart < 10:
             if self.type == "AI":
                 text = font.render(f"Veuillez placer un de vos 5 pions", True, RGB)
                 screen.blit(text, (650*self.width_ratio, 900*self.height_ratio))
@@ -486,3 +489,4 @@ def launch_game(mode,type_game):
     game = Game(mode,type_game)
     game.play()
     
+launch_game("normal","local")
