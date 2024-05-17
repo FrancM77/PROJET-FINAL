@@ -77,12 +77,12 @@ class Mode:
         self.width_ratio = width_ratio
         self.height_ratio = height_ratio
         self.background_image_path = f'images/{mode}.jpg'
-        self.network_button = pygame.transform.scale(pygame.image.load('images/network.png'), (int(505*width_ratio), int(264*height_ratio)))
+        self.local_button = pygame.transform.scale(pygame.image.load('images/local.png'), (int(505*width_ratio), int(264*height_ratio)))
         self.ia_button = pygame.transform.scale(pygame.image.load('images/ai.png'), (int(508*width_ratio), int(263*height_ratio)))
 
     def run(self):
         from staryinsh_home import play_button_sound
-        hover_network = False
+        hover_local = False
         hover_ia = False
         while True:
             for event in pygame.event.get():
@@ -92,19 +92,19 @@ class Mode:
                     if event.button == 1:
                         if 860*self.width_ratio <= event.pos[0] <= 1355*self.width_ratio and 587*self.height_ratio <= event.pos[1] <= 829*self.height_ratio:
                             play_button_sound()
-                            launch_game(self.mode, "network")
+                            launch_game(self.mode, "local")
                         if 1380*self.width_ratio <= event.pos[0] <= 1875*self.width_ratio and 587*self.height_ratio <= event.pos[1] <= 829*self.height_ratio:
                             play_button_sound()
                             launch_game(self.mode, "AI")
                 elif event.type == MOUSEMOTION:
-                    hover_network = 855*self.width_ratio <= event.pos[0] <= 855*self.width_ratio + self.network_button.get_width() and 570*self.height_ratio <= event.pos[1] <= 570*self.height_ratio + self.network_button.get_height()
+                    hover_local = 855*self.width_ratio <= event.pos[0] <= 855*self.width_ratio + self.local_button.get_width() and 570*self.height_ratio <= event.pos[1] <= 570*self.height_ratio + self.local_button.get_height()
                     hover_ia = 1365*self.width_ratio <= event.pos[0] <= 1365*self.width_ratio + self.ia_button.get_width() and 570*self.height_ratio <= event.pos[1] <= 570*self.height_ratio + self.ia_button.get_height()
 
             self.screen.blit(pygame.transform.scale(pygame.image.load(self.background_image_path), (self.screen_width, self.screen_height)), (0, 0))
-            if hover_network:
-                GameMode.hover(self,self.network_button, 850*self.width_ratio, 570*self.height_ratio)
+            if hover_local:
+                GameMode.hover(self,self.local_button, 850*self.width_ratio, 570*self.height_ratio)
             else:
-                GameMode.unhover(self,self.network_button, 855*self.width_ratio, 575*self.height_ratio)
+                GameMode.unhover(self,self.local_button, 855*self.width_ratio, 575*self.height_ratio)
             if hover_ia:
                 GameMode.hover(self,self.ia_button, 1365*self.width_ratio, 570*self.height_ratio)
             else:
