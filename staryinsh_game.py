@@ -168,51 +168,65 @@ class Game:
                     self.board[y][x] = 4  
                 elif self.board[y][x] == 4:
                     self.board[y][x] = 3  
-
-
-    def align_check(self,start_x, start_y, x, y):
-            for j in range(5):
-                if self.board[start_y + j * y][start_x + j * x] != self.board[start_y][start_x]:
-                    return False
-            return True
         
     def align_condition(self, screen):
+        self.alignments = []
         for j in range(11):
             for i in range(11):
-                if self.board[j][i] in [3, 4]:
-                    player_owner = 1 if self.board[j][i] == 4 else 2
+                if self.board[j][i] in [3, 4]:  
                     # Horizontal (-)
                     if i <= 6 and self.align_check(i, j, 1, 0):
-                        if player_owner == self.player:
-                            for k in range(5):
-                                self.board[j][i + k] = 0
-                            self.display_piece(screen)
-                            self.change_player()
-                            self.play_sound_once("alignement")
-                            self.remove_mode = True
-                        return True
+                        alignment = [(j, i + k) for k in range(5)]
+                        self.alignments.append(alignment)
+                    
                     # Vertical (|)
                     if j <= 6 and self.align_check(i, j, 0, 1):
-                        if player_owner == self.player:
-                            for k in range(5):
-                                self.board[j + k][i] = 0
-                            self.display_piece(screen)
-                            self.change_player()
-                            self.play_sound_once("alignement")
-                            self.remove_mode = True
-                        return True
-                    # Diagonal utile (\)
+                        alignment = [(j + k, i) for k in range(5)]
+                        self.alignments.append(alignment)
+                    
+                    # Diagonal (\)
                     if j <= 6 and i <= 6 and self.align_check(i, j, 1, 1):
-                        if player_owner == self.player:
-                            for k in range(5):
-                                self.board[j + k][i + k] = 0
-                            self.display_piece(screen)
-                            self.change_player()
-                            self.play_sound_once("alignement")
-                            self.remove_mode = True
-                        return True
-                            
-        return False
+                        alignment = [(j + k, i + k) for k in range(5)]
+                        self.alignments.append(alignment)
+                    
+                    # Diagonal (/)
+                    if j >= 4 and i <= 6 and self.align_check(i, j, 1, -1):
+                        alignment = [(j - k, i + k) for k in range(5)]
+                        self.alignments.append(alignment)
+
+        if len(self.alignments) == 1:
+            self.remove_alignment(screen, self.alignments[0])
+        elif len(self.alignments) > 1:
+            self.prompt_for_alignment_choice(screen)
+
+    def prompt_for_alignment_choice(self, screen):
+        print("Choisissez un alignement à supprimer parmi les suivants :")
+        for idx, alignment in enumerate(self.alignments):
+            print(f"Alignement {idx + 1}: {alignment}")
+
+        choice = int(input("Entrez le numéro de l'alignement à supprimer : ")) - 1
+        if 0 <= choice < len(self.alignments):
+            self.remove_alignment(screen, self.alignments[choice])
+            self.alignments.pop(choice)
+
+    def remove_alignment(self, screen, alignment):
+        for (j, i) in alignment:
+            self.board[j][i] = 0
+        self.display_piece(screen)
+        self.change_player()
+        self.remove_mode = True
+        self.play_sound_once("alignement")
+        self.prompt_remove_piece(screen)
+
+    def prompt_remove_piece(self, screen):
+        print("Choisissez un pion à supprimer")
+
+    def align_check(self, x, y, dx, dy):
+        piece = self.board[y][x]
+        for k in range(1, 5):
+            if self.board[y + k * dy][x + k * dx] != piece:
+                return False
+        return True
 
 
     def update_points(self):
