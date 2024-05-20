@@ -198,13 +198,47 @@ class Game:
             self.remove_alignment(screen, self.alignments[0])
         elif len(self.alignments) > 1:
             self.prompt_for_alignment_choice(screen)
+            
 
-    def prompt_for_alignment_choice(self, screen):
-        print("Choisissez un alignement à supprimer parmi les suivants :")
-        for idx, alignment in enumerate(self.alignments):
-            print(f"Alignement {idx + 1}: {alignment}")
+    def prompt_for_alignment_choice(self,screen):
+        # Afficher un message pour demander à l'utilisateur de choisir un alignement
+        font = pygame.font.Font(None, 36)
+        message = font.render("Choisissez un alignement à supprimer :", True, (0, 255, 0))
+        message_rect = message.get_rect(center=(screen.get_width() // 2, screen.get_height() // 4))
+        screen.blit(message, message_rect)
 
-        choice = int(input("Entrez le numéro de l'alignement à supprimer : ")) - 1
+        # Afficher les boutons pour chaque alignement
+        button_width = 200
+        button_height = 50
+        button_margin = 10
+        for i, alignment in enumerate(self.alignments):
+            x = (screen.get_width() - (button_width * len(self.alignments) + button_margin * (len(self.alignments) - 1))) // 2 + i * (button_width + button_margin)
+            y = screen.get_height() // 2
+            button = pygame.Rect(x, y, button_width, button_height)
+            pygame.draw.rect(screen, (255, 255, 255), button)
+            text = font.render(f"Alignement {i + 1}", True, (0, 0, 0))
+            text_rect = text.get_rect(center=button.center)
+            screen.blit(text, text_rect)
+
+        pygame.display.flip()
+
+        # Attendre que l'utilisateur clique sur un bouton ou entre une valeur à l'aide du clavier
+        choice = None
+        while choice is None:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        for i, alignment in enumerate(self.alignments):
+                            x = (screen.get_width() - (button_width * len(self.alignments) + button_margin * (len(self.alignments) - 1))) // 2 + i * (button_width + button_margin)
+                            y = screen.get_height() // 2
+                            button = pygame.Rect(x, y, button_width, button_height)
+                            if button.collidepoint(event.pos):
+                                choice = i
+                                break
+            pygame.display.flip()
+
         if 0 <= choice < len(self.alignments):
             self.remove_alignment(screen, self.alignments[choice])
             self.alignments.pop(choice)
@@ -237,7 +271,6 @@ class Game:
         self.change_player()
 
 
-
     def piece_action(self, x, y, event, square_size, screen, i, j):
         if self.remove_mode:
             self.remove_piece(x, y, event, square_size, screen, i, j)
@@ -252,7 +285,6 @@ class Game:
                     self.previous_position = None   
             else:
                 self.placed_second_piece, self.previous_position = self.place_second_piece(x, y,event, square_size, screen, i, j)
-
         return False
 
 
