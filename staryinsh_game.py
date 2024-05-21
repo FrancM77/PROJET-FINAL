@@ -188,11 +188,7 @@ class Game:
                     if j <= 6 and i <= 6 and self.align_check(i, j, 1, 1):
                         alignment = [(j + k, i + k) for k in range(5)]
                         self.alignments.append(alignment)
-                    
-                    # Diagonal (/)
-                    if j >= 4 and i <= 6 and self.align_check(i, j, 1, -1):
-                        alignment = [(j - k, i + k) for k in range(5)]
-                        self.alignments.append(alignment)
+
 
         if len(self.alignments) == 1:
             self.remove_alignment(screen, self.alignments[0])
