@@ -42,8 +42,8 @@ class AI:
                 self.game.change_player()
                 pygame.display.flip()
                 return True
-    
-    
+            
+            
     def remove_piece(self, screen):
         while True:
             i, j = random.randint(0, 10), random.randint(0, 10)
@@ -61,7 +61,7 @@ class AI:
         if self.game.remove_mode:
             self.remove_piece(screen)
             return 
-        if self.game.nb_pieces_placed_depart < 10:
+        elif self.game.nb_pieces_placed_depart < 2:
             return self.place_first_piece(screen)
         else:
             if self.placed_second_piece:

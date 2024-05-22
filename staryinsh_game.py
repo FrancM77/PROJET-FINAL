@@ -3,16 +3,16 @@ from pygame.locals import *
 
 class Game:
     def __init__(self,mode,type_game):
-        self.board= [['N', 0, 0 ,0 ,0, 'N', 'N' ,'N', 'N' ,'N', 'N'],
-                    [0, 0, 0 ,0, 0 ,0 ,0, 'N', 'N' ,'N', 'N'],
-                    [0, 0 ,0 ,0 ,0, 0, 0 ,0, 'N', 'N' ,'N'] ,
-                    [0 ,0 ,0 ,0 ,0, 0, 0, 0, 0, 'N' ,'N'],
-                    [0, 0 ,0 ,0 ,0 ,0, 0 ,0, 0 ,0 ,'N' ],
-                    ['N', 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,'N'] ,
-                    ['N', 0 ,0 ,0 ,0 ,0 ,0, 0, 0, 0, 0 ],
-                    ['N' ,'N', 0, 0 ,0 ,0 ,0, 0 ,0 ,0 ,0] ,
-                    ['N' ,'N', 'N', 0, 0 ,0 ,0 ,0 ,0, 0 ,0],
-                    ['N', 'N', 'N', 'N', 0 ,0, 0 ,0, 0 ,0 ,0],
+        self.board= [['N', 0, 0 ,3 ,0, 'N', 'N' ,'N', 'N' ,'N', 'N'],
+                    [0, 0, 0 ,3, 0 ,0 ,0, 'N', 'N' ,'N', 'N'],
+                    [0, 0 ,0 ,3 ,0, 0, 0 ,0, 'N', 'N' ,'N'] ,
+                    [0 ,0 ,0 ,3 ,0, 0, 0, 0, 0, 'N' ,'N'],
+                    [3, 3 ,3 ,1 ,3 ,0, 0 ,0, 0 ,0 ,'N' ],
+                    ['N', 0, 0 ,0 ,0 ,3 ,0 ,0 ,4 ,4 ,'N'] ,
+                    ['N', 0 ,0 ,0 ,0 ,4 ,0, 0, 0, 0, 0 ],
+                    ['N' ,'N', 0, 0 ,0 ,4 ,0, 0 ,0 ,0 ,0] ,
+                    ['N' ,'N', 'N', 0, 0 ,4 ,0 ,0 ,0, 0 ,0],
+                    ['N', 'N', 'N', 'N', 0 ,4, 0 ,0, 0 ,0 ,0],
                     ['N', 'N' ,'N', 'N', 'N' ,'N' ,0 ,0, 0 ,0, 'N']]
         
         self.mode = mode
@@ -22,6 +22,7 @@ class Game:
         self.player_1_points = 0 
         self.player_2_points = 0
         self.remove_mode = False
+        self.multialign= False
         self.placed_second_piece = False
         self.placed_third_piece = False
         if self.mode == "normal":
@@ -60,6 +61,7 @@ class Game:
                 self.play_sound_once("first_piece")
         return False
     
+    
     def place_second_piece(self, x, y, event, square_size, screen, i, j):
         if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
             i += self.recover_offset(j)
@@ -86,8 +88,8 @@ class Game:
                 self.board[j][i] = 1 if self.player == 1 else 2
                 self.board[previous_j][previous_i] = 3 if self.player == 1 else 4
                 self.display_piece(screen)
-                self.change_player()
                 self.play_sound_once("third_piece")
+                
                 return True
         return False
     
@@ -169,92 +171,59 @@ class Game:
                 elif self.board[y][x] == 4:
                     self.board[y][x] = 3  
         
+        
     def align_condition(self, screen):
         self.alignments = []
         for j in range(11):
             for i in range(11):
                 if self.board[j][i] in [3, 4]:  
+                    player_owner = 2 if self.board[j][i] == 4 else 1
                     # Horizontal (-)
                     if i <= 6 and self.align_check(i, j, 1, 0):
-                        alignment = [(j, i + k) for k in range(5)]
-                        self.alignments.append(alignment)
+                        if player_owner == self.player:
+                            alignment = [(j, i + k) for k in range(5)]
+                            self.alignments.append(alignment)
                     
                     # Vertical (|)
                     if j <= 6 and self.align_check(i, j, 0, 1):
-                        alignment = [(j + k, i) for k in range(5)]
-                        self.alignments.append(alignment)
+                        if player_owner == self.player:
+                            alignment = [(j + k, i) for k in range(5)]
+                            self.alignments.append(alignment)
                     
                     # Diagonal (\)
                     if j <= 6 and i <= 6 and self.align_check(i, j, 1, 1):
-                        alignment = [(j + k, i + k) for k in range(5)]
-                        self.alignments.append(alignment)
-
-
+                        if player_owner == self.player:
+                            alignment = [(j + k, i + k) for k in range(5)]
+                            self.alignments.append(alignment)
         if len(self.alignments) == 1:
             self.remove_alignment(screen, self.alignments[0])
+            return True
         elif len(self.alignments) > 1:
-            self.prompt_for_alignment_choice(screen)
-            
-
-    def prompt_for_alignment_choice(self,screen):
-        # Afficher un message pour demander à l'utilisateur de choisir un alignement
-        font = pygame.font.Font(None, 36)
-        message = font.render("Choisissez un alignement à supprimer :", True, (0, 255, 0))
-        message_rect = message.get_rect(center=(screen.get_width() // 2, screen.get_height() // 4))
-        screen.blit(message, message_rect)
-
-        # Afficher les boutons pour chaque alignement
-        button_width = 200
-        button_height = 50
-        button_margin = 10
-        for i, alignment in enumerate(self.alignments):
-            x = (screen.get_width() - (button_width * len(self.alignments) + button_margin * (len(self.alignments) - 1))) // 2 + i * (button_width + button_margin)
-            y = screen.get_height() // 2
-            button = pygame.Rect(x, y, button_width, button_height)
-            pygame.draw.rect(screen, (255, 255, 255), button)
-            text = font.render(f"Alignement {i + 1}", True, (0, 0, 0))
-            text_rect = text.get_rect(center=button.center)
-            screen.blit(text, text_rect)
-
-        pygame.display.flip()
-
-        # Attendre que l'utilisateur clique sur un bouton ou entre une valeur à l'aide du clavier
-        choice = None
-        while choice is None:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        for i, alignment in enumerate(self.alignments):
-                            x = (screen.get_width() - (button_width * len(self.alignments) + button_margin * (len(self.alignments) - 1))) // 2 + i * (button_width + button_margin)
-                            y = screen.get_height() // 2
-                            button = pygame.Rect(x, y, button_width, button_height)
-                            if button.collidepoint(event.pos):
-                                choice = i
-                                break
-            pygame.display.flip()
-
-        if 0 <= choice < len(self.alignments):
-            self.remove_alignment(screen, self.alignments[choice])
-            self.alignments.pop(choice)
+            self.multialign = True
+            return True
+        return False
+    
+    def alignment_choice(self,i,j,x,y,event,square_size,screen):
+        if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
+            i += self.recover_offset(j)
+            for alignment in self.alignments:
+                if (j,i) in alignment:
+                    self.remove_alignment(screen, alignment)
+                    self.multialign = False
+                    break
+        return False
 
     def remove_alignment(self, screen, alignment):
         for (j, i) in alignment:
             self.board[j][i] = 0
         self.display_piece(screen)
-        self.change_player()
         self.remove_mode = True
         self.play_sound_once("alignement")
-        self.prompt_remove_piece(screen)
 
-    def prompt_remove_piece(self, screen):
-        print("Choisissez un pion à supprimer")
 
-    def align_check(self, x, y, dx, dy):
-        piece = self.board[y][x]
-        for k in range(1, 5):
-            if self.board[y + k * dy][x + k * dx] != piece:
+    def align_check(self,start_x, start_y, x, y):
+        for j in range(5):
+            if self.board[start_y + j * y][start_x + j * x] != self.board[start_y][start_x]:
                 return False
         return True
 
@@ -266,26 +235,33 @@ class Game:
             self.player_2_points += 1
         self.change_player()
 
-
+    
     def piece_action(self, x, y, event, square_size, screen, i, j):
+        if self.multialign:
+            self.alignment_choice(i,j,x,y,event,square_size,screen)
+            return True
         if self.remove_mode:
             self.remove_piece(x, y, event, square_size, screen, i, j)
-            return False
-        if self.nb_pieces_placed_depart < 10:
+            return True
+        if self.nb_pieces_placed_depart < 2:
             return self.place_first_piece(x, y, event, square_size, screen, i, j)
         else:
             if self.placed_second_piece:
                 self.placed_third_piece = self.place_third_piece(x, y, event, square_size, screen, i, j)
-                if self.placed_third_piece:
+                if self.placed_third_piece and not self.align_condition(screen):
+                    self.change_player()
                     self.placed_second_piece = False
                     self.previous_position = None   
+                    return
+                else:
+                    return
             else:
                 self.placed_second_piece, self.previous_position = self.place_second_piece(x, y,event, square_size, screen, i, j)
         return False
 
 
     def remove_piece(self, x, y, event, square_size, screen, i, j):
-        if self.remove_mode and x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
+        if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
             i += self.recover_offset(j)
             if self.board[j][i] == self.player:
                 self.board[j][i] = 0
@@ -431,7 +407,7 @@ class Game:
                     j = 10
                     x,y = (1075 + (i * 75))*self.width_ratio, (843 - (i * 43))*self.height_ratio
                     self.piece_action(x,y,event, square_size, screen,i,j)
-
+    
 
     def victory_condition(self):         
         if self.player_1_points == self.nb_circle:
@@ -452,16 +428,23 @@ class Game:
     
     def display_info(self, screen, font):
         RGB = (235,117,141) if self.player == 1 else (84, 181, 97)
-        while self.nb_pieces_placed_depart < 10:
+        while self.nb_pieces_placed_depart < 2:
             if self.type == "AI":
                 text = font.render(f"Veuillez placer un de vos 5 pions", True, RGB)
                 screen.blit(text, (650*self.width_ratio, 900*self.height_ratio))
             else:
                 text = font.render(f"Joueur {self.player}, veuillez placer un de vos 5 pions", True, RGB)
                 screen.blit(text, (550*self.width_ratio, 900*self.height_ratio))
-            
             return
-        if self.remove_mode:
+        if self.multialign:
+            if self.type == "AI":
+                multialign_text = font.render(f"Veuillez supprimer un de vos alignements", True, RGB)
+                screen.blit(multialign_text, (650*self.width_ratio, 900*self.height_ratio))
+            else:
+                multialign_text = font.render(f"Joueur {self.player}, veuillez supprimer un de vos alignements", True, RGB)
+                screen.blit(multialign_text, (470*self.width_ratio, 900*self.height_ratio))
+            return
+        elif self.remove_mode:
             if self.type == "AI":
                 remove_text = font.render(f"Veuillez supprimer un de vos pions", True, RGB)
                 screen.blit(remove_text, (650*self.width_ratio, 900*self.height_ratio))
@@ -469,7 +452,7 @@ class Game:
                 remove_text = font.render(f"Joueur {self.player}, veuillez supprimer un de vos pions", True, RGB)
                 screen.blit(remove_text, (550*self.width_ratio, 900*self.height_ratio))
             return 
-        if self.type == "AI":
+        elif self.type == "AI":
             player_text = font.render(f"C'est à votre tour", True, RGB)
             screen.blit(player_text, (800*self.width_ratio, 900*self.height_ratio)) 
         else:
@@ -514,12 +497,12 @@ class Game:
                         ai.play(screen)
                 else:
                     self.hit_box(event, square_size, screen)
-                
-                pygame.display.flip()
                 self.align_condition(screen)
+                pygame.display.flip()
+                
                 self.display_info(screen,space_font)
+                
                 if self.victory_condition()[0]:
-                    print(f"le joueur {self.victory_condition()[1]} a gagné")
                     self.play_music("game_over")  
                     from victory_screen import victory_screen
                     victory_screen(self.victory_condition()[1],self.mode,self.type)
@@ -531,4 +514,4 @@ def launch_game(mode,type_game):
     game = Game(mode,type_game)
     game.play()
     
-launch_game("normal","local")
+launch_game("normal","l")
