@@ -8,7 +8,7 @@ class Game:
                     [0, 0 ,0 ,3 ,0, 0, 0 ,0, 'N', 'N' ,'N'] ,
                     [0 ,0 ,0 ,3 ,0, 0, 0, 0, 0, 'N' ,'N'],
                     [3, 3 ,3 ,1 ,3 ,0, 0 ,0, 0 ,0 ,'N' ],
-                    ['N', 0, 0 ,0 ,0 ,3 ,4 ,4 ,4 ,4 ,'N'] ,
+                    ['N', 0, 0 ,0 ,0 ,2 ,4 ,4 ,4 ,4 ,'N'] ,
                     ['N', 0 ,0 ,0 ,0 ,4 ,0, 0, 0, 0, 0 ],
                     ['N' ,'N', 0, 0 ,0 ,4 ,0, 0 ,0 ,0 ,0] ,
                     ['N' ,'N', 'N', 0, 0 ,4 ,0 ,0 ,0, 0 ,0],
@@ -35,13 +35,21 @@ class Game:
         for i in range(1,7):
             self.piece_image[i] = pygame.image.load(f'./pion/pion{i}.png')
             self.piece_image[i] = pygame.transform.scale(self.piece_image[i], (60*self.height_ratio, 60*self.width_ratio))
+            
 
     def change_player(self):
+        self.player = 2 if self.player == 1 else 1
+        
+    
+    def update_points(self):
         if self.player == 1:
-            self.player = 2
+            self.player_1_points += 1
         else:
-            self.player = 1
+            self.player_2_points += 1
+        self.change_player()
+        
 
+    #apply offset to the pieces
     def recover_offset(self,j):
         count = 0
         for row in range(11):
@@ -49,6 +57,8 @@ class Game:
                 count += 1
             elif self.board[j][row] in [0,1, 2, 3, 4, 5, 6]:
                 return count
+    
+    #function to place pieces on the board
     
     def place_first_piece(self, x, y, event, square_size, screen, i, j):
         if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
@@ -64,21 +74,16 @@ class Game:
     
     def place_second_piece(self, x, y, event, square_size, screen, i, j):
         if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
+            player = self.player
             i += self.recover_offset(j)
-            if self.player == 1 and self.board[j][i] == 1:
-                self.board[j][i] = 5
-                self.display_piece(screen)
-                self.play_sound_once("second_piece")
-                return True, (i, j)
-            if self.player == 2 and self.board[j][i] == 2:
-                self.board[j][i] = 6
+            if self.player == player and self.board[j][i] == player:
+                self.board[j][i] = player + 4
                 self.display_piece(screen)
                 self.play_sound_once("second_piece")
                 return True, (i, j)
         return False, None
 
    
-
     def place_third_piece(self, x, y, event, square_size, screen, i, j):
         previous_i , previous_j = self.previous_position
         if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
@@ -89,9 +94,54 @@ class Game:
                 self.board[previous_j][previous_i] = 3 if self.player == 1 else 4
                 self.display_piece(screen)
                 self.play_sound_once("third_piece")
-                
                 return True
         return False
+    
+    #end of function to place pieces on the board
+    
+    #function for pawn management
+    def piece_action(self, x, y, event, square_size, screen, i, j):
+        if self.multialign:
+            self.alignment_choice(i,j,x,y,event,square_size,screen)
+            return True
+        if self.remove_mode:
+            self.remove_piece(x, y, event, square_size, screen, i, j)
+            return True
+        if self.nb_pieces_placed_depart < 2:
+            return self.place_first_piece(x, y, event, square_size, screen, i, j)
+        else:
+            if self.placed_second_piece:
+                self.placed_third_piece = self.place_third_piece(x, y, event, square_size, screen, i, j)
+                if self.placed_third_piece and not self.align_condition(screen):
+                    self.change_player()
+                    self.placed_second_piece = False
+                    self.previous_position = None   
+                    return
+                else:
+                    return
+            else:
+                self.placed_second_piece, self.previous_position = self.place_second_piece(x, y,event, square_size, screen, i, j)
+        return False
+    #end of function for pawn management
+
+    #function to remove a piece
+    def remove_piece(self, x, y, event, square_size, screen, i, j):
+        if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
+            i += self.recover_offset(j)
+            if self.board[j][i] == self.player:
+                self.board[j][i] = 0
+                self.display_piece(screen)
+                self.update_points()
+                self.display_points(screen)
+                self.remove_mode = False
+                self.placed_second_piece = False
+                self.placed_third_piece = False
+                self.previous_position = None
+                return True
+        return False
+    #end of function to remove a piece
+    
+    #function to verify if the move is valid
     
     def verify_move_column(self, start_x, start_y, end_y,value):
         for y in range(min(start_y, end_y) + 1, max(start_y, end_y)):
@@ -125,53 +175,62 @@ class Game:
         
         
     def is_valid_move(self, start_x, start_y, end_x, end_y):
-        if start_x == end_x:  # colonne (|)
+        # colonne (|)
+        if start_x == end_x:  
             if start_y < end_y:
                 return self.verify_move_column(start_x, start_y, end_y,-1)
             if start_y > end_y:
                 return self.verify_move_column(start_x, start_y, end_y,1)
-            
-        elif start_y == end_y:  # ligne (-)
+        # ligne (-)    
+        elif start_y == end_y:  
             if start_x < end_x:
                 return self.verify_move_line(start_x, start_y, end_x,-1)
             if start_x > end_x:
                 return self.verify_move_line(start_x, start_y, end_x,1)
-            
-        elif start_x - end_x == start_y - end_y:  # Diagonal utile (\)
+        # Diagonal utile (\)
+        elif start_x - end_x == start_y - end_y:  
             if start_x < end_x:
                 return self.verify_move_diagonal(start_x, start_y, end_x, end_y,-1)
             if start_x > end_x:
                 return self.verify_move_diagonal(start_x, start_y, end_x, end_y,1)
         else:
             return False
+        
+    #end of function to verify if the move is valid
+    
+    #functions to flip the pieces
 
     def flip_pieces(self, start_x, start_y, end_x, end_y):
-        if start_x == end_x:  # colonne (|)
+        # colonne (|)
+        if start_x == end_x:  
             for y in range(min(start_y, end_y) + 1, max(start_y, end_y)):
-                if self.board[y][start_x] == 3:
-                    self.board[y][start_x] = 4 
-                elif self.board[y][start_x] == 4:
-                    self.board[y][start_x] = 3  
-                    
-        elif start_y == end_y:  # ligne (-)
+                self.flip(y, start_x)
+        # ligne (-)
+        elif start_y == end_y:  
             for x in range(min(start_x, end_x) + 1, max(start_x, end_x)):
-                if self.board[start_y][x] == 3:
-                    self.board[start_y][x] = 4  
-                elif self.board[start_y][x] == 4:
-                    self.board[start_y][x] = 3  
-
-        elif start_x - end_x == start_y - end_y:  # Diagonal utile (\)
-            min_x = min(start_x, end_x)
-            min_y = min(start_y, end_y)
+                self.flip(start_y, x)
+        # Diagonal utile (\)
+        elif start_x - end_x == start_y - end_y:  
             for i in range(1, abs(start_x - end_x)):
-                x = min_x + i
-                y = min_y + i
-                if self.board[y][x] == 3:
-                    self.board[y][x] = 4  
-                elif self.board[y][x] == 4:
-                    self.board[y][x] = 3  
+                x = min(start_x, end_x) + i
+                y = min(start_y, end_y) + i
+                self.flip(y, x) 
         
-        
+    def flip(self,a,b):
+        if self.board[a][b] == 3:
+            self.board[a][b] = 4
+        elif self.board[a][b] == 4:
+            self.board[a][b] = 3
+    
+    #end of functions to flip the pieces
+    
+    #function to check if there is an alignment
+    def align_check(self,start_x, start_y, x, y):
+        for j in range(5):
+            if self.board[start_y + j * y][start_x + j * x] != self.board[start_y][start_x]:
+                return False
+        return True
+    
     def align_condition(self, screen):
         self.alignments = []
         for j in range(11):
@@ -202,7 +261,9 @@ class Game:
             self.multialign = True
             return True
         return False
+    #end of function to check if there is an alignment
     
+    #function to remove alignment
     def alignment_choice(self,i,j,x,y,event,square_size,screen):
         if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
             i += self.recover_offset(j)
@@ -219,63 +280,9 @@ class Game:
         self.display_piece(screen)
         self.remove_mode = True
         self.play_sound_once("alignement")
+    #end of function to remove alignment
 
-
-    def align_check(self,start_x, start_y, x, y):
-        for j in range(5):
-            if self.board[start_y + j * y][start_x + j * x] != self.board[start_y][start_x]:
-                return False
-        return True
-
-
-    def update_points(self):
-        if self.player == 1:
-            self.player_1_points += 1
-        else:
-            self.player_2_points += 1
-        self.change_player()
-
-    
-    def piece_action(self, x, y, event, square_size, screen, i, j):
-        if self.multialign:
-            self.alignment_choice(i,j,x,y,event,square_size,screen)
-            return True
-        if self.remove_mode:
-            self.remove_piece(x, y, event, square_size, screen, i, j)
-            return True
-        if self.nb_pieces_placed_depart < 2:
-            return self.place_first_piece(x, y, event, square_size, screen, i, j)
-        else:
-            if self.placed_second_piece:
-                self.placed_third_piece = self.place_third_piece(x, y, event, square_size, screen, i, j)
-                if self.placed_third_piece and not self.align_condition(screen):
-                    self.change_player()
-                    self.placed_second_piece = False
-                    self.previous_position = None   
-                    return
-                else:
-                    return
-            else:
-                self.placed_second_piece, self.previous_position = self.place_second_piece(x, y,event, square_size, screen, i, j)
-        return False
-
-
-    def remove_piece(self, x, y, event, square_size, screen, i, j):
-        if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
-            i += self.recover_offset(j)
-            if self.board[j][i] == self.player:
-                self.board[j][i] = 0
-                self.display_piece(screen)
-                self.update_points()
-                self.display_points(screen)
-                self.remove_mode = False
-                self.placed_second_piece = False
-                self.placed_third_piece = False
-                self.previous_position = None
-                return True
-        return False
-
-
+    #functions to display the pieces on the board
     def display_piece(self,screen):
         self.load_background(screen)
         for i in range(1,5):
@@ -312,11 +319,22 @@ class Game:
             j=10
             self.display_piece_action((650+(i*75)-31)*self.width_ratio, (1130-(i*43)-35)*self.height_ratio,screen,i,j)
     
-    def load_background(self, screen):
-        background = pygame.image.load('images/board.jpeg')
-        screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
-        background = pygame.transform.scale(background, (screen_width, screen_height))
-        screen.blit(background, (0, 0))     
+    def display_piece_action(self, x2, y2, screen, i, j):
+        self.display_side_piece_start(screen)
+        self.display_points(screen)
+        if self.board[j][i] == 1:
+            screen.blit(self.piece_image[1], (x2, y2))
+        elif self.board[j][i] == 2:
+            screen.blit(self.piece_image[2], (x2, y2))
+        elif self.board[j][i] == 3:
+            screen.blit(self.piece_image[3], (x2, y2))
+        elif self.board[j][i] == 4:
+            screen.blit(self.piece_image[4], (x2, y2))
+        elif self.board[j][i] == 5:
+            screen.blit(self.piece_image[5], (x2, y2))
+        elif self.board[j][i] == 6:
+            screen.blit(self.piece_image[6], (x2, y2))
+    #end of functions to display the pieces on the board
             
     
     # fonction qui s'occupe des pieces sur les cotes pour compter les points
@@ -341,25 +359,15 @@ class Game:
             
     # fin de gestion des pieces sur les cotes
     
-    
-    def display_piece_action(self, x2, y2, screen, i, j):
-        self.display_side_piece_start(screen)
-        self.display_points(screen)
-        if self.board[j][i] == 1:
-            screen.blit(self.piece_image[1], (x2, y2))
-        elif self.board[j][i] == 2:
-            screen.blit(self.piece_image[2], (x2, y2))
-        elif self.board[j][i] == 3:
-            screen.blit(self.piece_image[3], (x2, y2))
-        elif self.board[j][i] == 4:
-            screen.blit(self.piece_image[4], (x2, y2))
-        elif self.board[j][i] == 5:
-            screen.blit(self.piece_image[5], (x2, y2))
-        elif self.board[j][i] == 6:
-            screen.blit(self.piece_image[6], (x2, y2))
+    #function to load the background
+    def load_background(self, screen):
+        background = pygame.image.load('images/board.jpeg')
+        screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
+        background = pygame.transform.scale(background, (screen_width, screen_height))
+        screen.blit(background, (0, 0))     
+    #end of function to load the background
 
-
-
+    #function to manage the pieces on the board
     def hit_box(self, event, square_size, screen):
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
@@ -407,25 +415,18 @@ class Game:
                     j = 10
                     x,y = (1075 + (i * 75))*self.width_ratio, (843 - (i * 43))*self.height_ratio
                     self.piece_action(x,y,event, square_size, screen,i,j)
-    
+    #end of function to manage the pieces on the board
 
+    #function to verify if the player has won
     def victory_condition(self):         
         if self.player_1_points == self.nb_circle:
             return True,1
         if self.player_2_points == self.nb_circle:
             return True,2
         return False,None
-    
-    
-        
-    def show_board(self):
-        for i in range(11):
-            for j in range(10):
-                print(self.board[i][j], end=" ")
-            print()
+    #end of function to verify if the player has won
 
-    
-    
+    #function to display the information on the screen
     def display_info(self, screen, font):
         RGB = (235,117,141) if self.player == 1 else (84, 181, 97)
         while self.nb_pieces_placed_depart < 2:
@@ -458,7 +459,9 @@ class Game:
         else:
             player_text = font.render(f"C'est au tour du joueur {self.player}", True, RGB)
             screen.blit(player_text, (750*self.width_ratio, 900*self.height_ratio)) 
-
+    #end of function to display the information on the screen
+    
+    #functions to play music and sound
     def play_music(self,title):
         pygame.mixer.music.stop()
         pygame.mixer.music.load(f'sounds/{title}.mp3')
@@ -467,7 +470,10 @@ class Game:
     def play_sound_once(self,title):
         sound = pygame.mixer.Sound(f'sounds/{title}.mp3')
         sound.play()
+    #end of functions to play music and sound
     
+    
+    #function to play the game
     def play(self):
         pygame.init()
         screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
@@ -508,7 +514,7 @@ class Game:
                     victory_screen(self.victory_condition()[1],self.mode,self.type)
                     running = False
         pygame.quit()
-
+    #end of function to play the game
 
 def launch_game(mode,type_game):
     game = Game(mode,type_game)
