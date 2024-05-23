@@ -175,19 +175,19 @@ class Game:
         
         
     def is_valid_move(self, start_x, start_y, end_x, end_y):
-        # colonne (|)
+        # column (|)
         if start_x == end_x:  
             if start_y < end_y:
                 return self.verify_move_column(start_x, start_y, end_y,-1)
             if start_y > end_y:
                 return self.verify_move_column(start_x, start_y, end_y,1)
-        # ligne (-)    
+        # line (-)    
         elif start_y == end_y:  
             if start_x < end_x:
                 return self.verify_move_line(start_x, start_y, end_x,-1)
             if start_x > end_x:
                 return self.verify_move_line(start_x, start_y, end_x,1)
-        # Diagonal utile (\)
+        # Diagonal (\)
         elif start_x - end_x == start_y - end_y:  
             if start_x < end_x:
                 return self.verify_move_diagonal(start_x, start_y, end_x, end_y,-1)
@@ -201,15 +201,15 @@ class Game:
     #functions to flip the pieces
 
     def flip_pieces(self, start_x, start_y, end_x, end_y):
-        # colonne (|)
+        # column (|)
         if start_x == end_x:  
             for y in range(min(start_y, end_y) + 1, max(start_y, end_y)):
                 self.flip(y, start_x)
-        # ligne (-)
+        # line (-)
         elif start_y == end_y:  
             for x in range(min(start_x, end_x) + 1, max(start_x, end_x)):
                 self.flip(start_y, x)
-        # Diagonal utile (\)
+        # Diagonal (\)
         elif start_x - end_x == start_y - end_y:  
             for i in range(1, abs(start_x - end_x)):
                 x = min(start_x, end_x) + i
@@ -237,13 +237,13 @@ class Game:
             for i in range(11):
                 if self.board[j][i] in [3, 4]:  
                     player_owner = 2 if self.board[j][i] == 4 else 1
-                    # Horizontal (-)
+                    # line (-)
                     if i <= 6 and self.align_check(i, j, 1, 0):
                         if player_owner == self.player:
                             alignment = [(j, i + k) for k in range(5)]
                             self.alignments.append(alignment)
                     
-                    # Vertical (|)
+                    # column (|)
                     if j <= 6 and self.align_check(i, j, 0, 1):
                         if player_owner == self.player:
                             alignment = [(j + k, i) for k in range(5)]
@@ -337,7 +337,7 @@ class Game:
     #end of functions to display the pieces on the board
             
     
-    # fonction qui s'occupe des pieces sur les cotes pour compter les points
+    # function which takes care of the pieces on the sides to count the points
     
     def load_side_img(self,number,alpha,x,y,screen):
         image = self.piece_image[number].convert_alpha()
@@ -357,7 +357,7 @@ class Game:
             self.load_side_img(1,2,10,(10+(i*95)),screen)
             self.load_side_img(2,3,1940,(1050-(i*95)),screen)
             
-    # fin de gestion des pieces sur les cotes
+    # end of function which takes care of the pieces on the sides to count the points
     
     #function to load the background
     def load_background(self, screen):
