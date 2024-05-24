@@ -3,16 +3,16 @@ from pygame.locals import *
 
 class Game:
     def __init__(self,mode,type_game):
-        self.board= [['N', 0, 0 ,3 ,0, 'N', 'N' ,'N', 'N' ,'N', 'N'],
-                    [0, 0, 0 ,3, 0 ,0 ,0, 'N', 'N' ,'N', 'N'],
-                    [0, 0 ,0 ,3 ,0, 0, 0 ,0, 'N', 'N' ,'N'] ,
-                    [0 ,0 ,0 ,3 ,0, 0, 0, 0, 0, 'N' ,'N'],
-                    [3, 3 ,3 ,1 ,3 ,0, 0 ,0, 0 ,0 ,'N' ],
-                    ['N', 0, 0 ,0 ,0 ,2 ,4 ,4 ,4 ,4 ,'N'] ,
-                    ['N', 0 ,0 ,0 ,0 ,4 ,0, 0, 0, 0, 0 ],
-                    ['N' ,'N', 0, 0 ,0 ,4 ,0, 0 ,0 ,0 ,0] ,
-                    ['N' ,'N', 'N', 0, 0 ,4 ,0 ,0 ,0, 0 ,0],
-                    ['N', 'N', 'N', 'N', 0 ,4, 0 ,0, 0 ,0 ,0],
+        self.board= [['N', 0, 0 ,0 ,0, 'N', 'N' ,'N', 'N' ,'N', 'N'],
+                    [0, 0, 0 ,0, 0 ,0 ,0, 'N', 'N' ,'N', 'N'],
+                    [0, 0 ,0 ,0 ,0, 0, 0 ,0, 'N', 'N' ,'N'] ,
+                    [0 ,0 ,0 ,0 ,0, 0, 0, 0, 0, 'N' ,'N'],
+                    [0, 0 ,0 ,0 ,0 ,0, 0 ,0, 0 ,0 ,'N' ],
+                    ['N', 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,'N'] ,
+                    ['N', 0 ,0 ,0 ,0 ,0 ,0, 0, 0, 0, 0 ],
+                    ['N' ,'N', 0, 0 ,0 ,0 ,0, 0 ,0 ,0 ,0] ,
+                    ['N' ,'N', 'N', 0, 0 ,0 ,0 ,0 ,0, 0 ,0],
+                    ['N', 'N', 'N', 'N', 0 ,0, 0 ,0, 0 ,0 ,0],
                     ['N', 'N' ,'N', 'N', 'N' ,'N' ,0 ,0, 0 ,0, 'N']]
         
         self.mode = mode
@@ -107,7 +107,7 @@ class Game:
         if self.remove_mode:
             self.remove_piece(x, y, event, square_size, screen, i, j)
             return True
-        if self.nb_pieces_placed_depart < 2:
+        if self.nb_pieces_placed_depart < 10:
             return self.place_first_piece(x, y, event, square_size, screen, i, j)
         else:
             if self.placed_second_piece:
@@ -283,41 +283,27 @@ class Game:
     #end of function to remove alignment
 
     #functions to display the pieces on the board
-    def display_piece(self,screen):
+    def display_piece(self, screen):
         self.load_background(screen)
-        for i in range(1,5):
-            j=0
-            self.display_piece_action((649+(i*75)-31)*self.width_ratio, (265-(i*43)-35)*self.height_ratio,screen,i,j)
-        for i in range(7):
-            j=1
-            self.display_piece_action((649+(i*75)-31)*self.width_ratio, (345-(i*43)-35)*self.height_ratio,screen,i,j)
-        for i in range(8):
-            j=2
-            self.display_piece_action((649+(i*75)-31)*self.width_ratio, (435-(i*43)-35)*self.height_ratio,screen,i,j)
-        for i in range(9):
-            j=3
-            self.display_piece_action((647+(i*75)-31)*self.width_ratio, (520-(i*43)-35)*self.height_ratio,screen,i,j)    
-        for i in range(10):
-            j=4
-            self.display_piece_action((647+(i*75)-31)*self.width_ratio, (605-(i*43)-35)*self.height_ratio,screen,i,j)
-        for i in range(1,10):
-            j=5
-            self.display_piece_action((649+(i*75)-31)*self.width_ratio, (695-(i*43)-35)*self.height_ratio,screen,i,j)
-        for i in range(1,11): 
-            j=6
-            self.display_piece_action((649+(i*75)-31)*self.width_ratio, (782-(i*43)-35)*self.height_ratio,screen,i,j)
-        for i in range(2,11):
-            j=7
-            self.display_piece_action((649+(i*75)-31)*self.width_ratio, (870-(i*43)-35)*self.height_ratio,screen,i,j)
-        for i in range(3,11):
-            j=8
-            self.display_piece_action((650+(i*75)-31)*self.width_ratio, (957-(i*43)-35)*self.height_ratio,screen,i,j)
-        for i in range(4,11):
-            j=9
-            self.display_piece_action((650+(i*75)-31)*self.width_ratio, (1043-(i*43)-35)*self.height_ratio,screen,i,j)
-        for i in range(5,11):
-            j=10
-            self.display_piece_action((650+(i*75)-31)*self.width_ratio, (1130-(i*43)-35)*self.height_ratio,screen,i,j)
+        
+        piece_data = [
+            (1, 5, 265),
+            (0, 7, 345),
+            (0, 8, 435),
+            (0, 9, 520),
+            (0, 10, 605),
+            (1, 10, 695),
+            (1, 11, 782),
+            (2, 11, 870),
+            (3, 11, 957),
+            (4, 11, 1043),
+            (5, 11, 1130)
+        ]
+        
+        for j, (start, end, y_offset) in enumerate(piece_data):
+            for i in range(start, end):
+                self.display_piece_action((649 + (i * 75) - 31) * self.width_ratio, (y_offset - (i * 43) - 35) * self.height_ratio, screen, i, j)
+
     
     def display_piece_action(self, x2, y2, screen, i, j):
         self.display_side_piece_start(screen)
@@ -369,52 +355,27 @@ class Game:
 
     #function to manage the pieces on the board
     def hit_box(self, event, square_size, screen):
-        if event.type == MOUSEBUTTONDOWN:
-            if event.button == 1:
-                for i in range(4):
-                    j = 0
-                    x,y = (697 + (i * 75))*self.width_ratio, (190 - (i * 43))*self.height_ratio
-                    self.piece_action(x,y,event, square_size, screen,i,j)
-                for i in range(7):
-                    j = 1
-                    x,y = (622 + (i * 75))*self.width_ratio, (320 - (i * 43))*self.height_ratio
-                    self.piece_action(x,y,event, square_size, screen,i,j)
-                for i in range(8):
-                    j = 2
-                    x,y = (622 + (i * 75))*self.width_ratio, (405 - (i * 43))*self.height_ratio
-                    self.piece_action(x,y,event, square_size, screen,i,j)
-                for i in range(9):
-                    j = 3
-                    x,y = (647 + (i * 75))*self.width_ratio, (495 - (i * 43))*self.height_ratio
-                    self.piece_action(x,y,event, square_size, screen,i,j)
-                for i in range(10):
-                    j = 4
-                    x,y = (622 + (i * 75))*self.width_ratio, (580 - (i * 43))*self.height_ratio
-                    self.piece_action(x,y,event, square_size, screen,i,j)
-                for i in range(9):
-                    j = 5
-                    x,y = (697 + (i * 75))*self.width_ratio, (625 - (i * 43))*self.height_ratio
-                    self.piece_action(x,y,event, square_size, screen,i,j)
-                for i in range(10):
-                    j = 6
-                    x,y = (697 + (i * 75))*self.width_ratio, (712 - (i * 43))*self.height_ratio
-                    self.piece_action(x,y,event, square_size, screen,i,j)
-                for i in range(9):
-                    j = 7
-                    x,y = (773 + (i * 75))*self.width_ratio, (755 - (i * 43))*self.height_ratio
-                    self.piece_action(x,y,event, square_size, screen,i,j)
-                for i in range(8):
-                    j = 8
-                    x,y = (848 + (i * 75))*self.width_ratio, (800 - (i * 43))*self.height_ratio
-                    self.piece_action(x,y,event, square_size, screen,i,j)
-                for i in range(7):
-                    j = 9
-                    x,y = (925 + (i * 75))*self.width_ratio, (842 - (i * 43))*self.height_ratio
-                    self.piece_action(x,y,event, square_size, screen,i,j)
-                for i in range(4):
-                    j = 10
-                    x,y = (1075 + (i * 75))*self.width_ratio, (843 - (i * 43))*self.height_ratio
-                    self.piece_action(x,y,event, square_size, screen,i,j)
+        if event.type == MOUSEBUTTONDOWN and event.button == 1:
+            positions = [
+                (4, 697, 190, 75, -43),  
+                (7, 622, 320, 75, -43),  
+                (8, 622, 405, 75, -43),  
+                (9, 647, 495, 75, -43),  
+                (10, 622, 580, 75, -43), 
+                (9, 697, 625, 75, -43),  
+                (10, 697, 712, 75, -43), 
+                (9, 773, 755, 75, -43),  
+                (8, 848, 800, 75, -43),  
+                (7, 925, 842, 75, -43),  
+                (4, 1075, 843, 75, -43) 
+            ]
+
+            for j, (count, base_x, base_y, x_step, y_step) in enumerate(positions):
+                for i in range(count):
+                    x = (base_x + i * x_step) * self.width_ratio
+                    y = (base_y + i * y_step) * self.height_ratio
+                    self.piece_action(x, y, event, square_size, screen, i, j)
+
     #end of function to manage the pieces on the board
 
     #function to verify if the player has won
@@ -429,7 +390,7 @@ class Game:
     #function to display the information on the screen
     def display_info(self, screen, font):
         RGB = (235,117,141) if self.player == 1 else (84, 181, 97)
-        while self.nb_pieces_placed_depart < 2:
+        while self.nb_pieces_placed_depart < 10:
             if self.type == "AI":
                 text = font.render(f"Veuillez placer un de vos 5 pions", True, RGB)
                 screen.blit(text, (650*self.width_ratio, 900*self.height_ratio))
