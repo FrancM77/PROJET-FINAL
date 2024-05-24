@@ -68,7 +68,21 @@ class Display:
             self.load_side_img(2,3,1940,(1050-(i*95)),screen)
             
     # end of function which takes care of the pieces on the sides to count the points
-    
+    def display_player(self, screen, font):
+        player1_ship = pygame.image.load('images/pink_ship.png')
+        player2_ship = pygame.image.load('images/green_ship.png')
+        player1_ship = pygame.transform.scale(player1_ship, (550*self.width_ratio, 375*self.height_ratio))
+        player2_ship = pygame.transform.scale(player2_ship, (375*self.width_ratio, 300*self.height_ratio))
+        if self.game.type == "AI":
+            return
+        else:
+            if self.game.player == 1:
+                screen.blit(player1_ship, (10*self.width_ratio, 500*self.height_ratio))
+            else:
+                screen.blit(player2_ship, (1500*self.width_ratio, 500*self.height_ratio))
+            
+                
+            
     #function to load the background
     def load_background(self, screen):
         background = pygame.image.load('images/board.jpeg')
@@ -80,7 +94,7 @@ class Display:
     #function to display the information on the screen
     def display_info(self, screen, font):
         RGB = (235,117,141) if self.game.player == 1 else (84, 181, 97)
-        while self.game.nb_pieces_placed_depart < 2:
+        while self.game.nb_pieces_placed_depart < 10:
             if self.game.type == "AI":
                 text = font.render(f"Veuillez placer un de vos 5 pions", True, RGB)
                 screen.blit(text, (650*self.width_ratio, 900*self.height_ratio))

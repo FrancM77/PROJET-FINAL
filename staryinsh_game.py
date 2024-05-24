@@ -74,7 +74,7 @@ class Game:
         if self.remove_mode:
             self.piece.remove_piece(x, y, event, square_size, screen, i, j)
             return True
-        if self.nb_pieces_placed_depart < 2:
+        if self.nb_pieces_placed_depart < 10:
             return self.piece.place_first_piece(x, y, event, square_size, screen, i, j)
         else:
             if self.placed_second_piece:
@@ -173,6 +173,7 @@ class Game:
                 if self.player == 2 and self.type == "AI":
                         ai.play(screen)
                 else:
+                    self.display.display_player(screen,space_font)
                     self.hit_box(event, square_size, screen)
                 self.align.align_condition(screen)
                 pygame.display.flip()
@@ -191,4 +192,4 @@ def launch_game(mode,type_game):
     game = Game(mode,type_game)
     game.play()
     
-launch_game("blitz","AI")
+launch_game("normal","l")

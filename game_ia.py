@@ -44,11 +44,12 @@ class AI:
                 self.game.board[j][i] = 2
                 self.game.board[previous_j][previous_i] = 4
                 self.display.display_piece(screen)
-                self.game.change_player()
+                if self.align.align_condition(screen):
+                    self.game.change_player()
                 pygame.display.flip()
                 return True
-    
-    
+            
+            
     def remove_piece(self, screen):
         while True:
             i, j = random.randint(0, 10), random.randint(0, 10)
@@ -61,19 +62,36 @@ class AI:
                 self.game.remove_mode = False
                 pygame.display.flip()
                 return True
+            
+    def alignment_choice(self,screen):
+        while True:
+            random_choice = random.choice(self.game.alignments)
+            coor = random.choice(random_choice)
+            for alignment in self.game.alignments:
+                if coor in alignment:
+                    self.align.remove_alignment(screen, alignment)
+                    self.game.multialign = False
+                    return True
 
     def play(self, screen):
+        if self.game.multialign:
+            self.alignment_choice(screen)
+            return True
         if self.game.remove_mode:
             self.remove_piece(screen)
             return 
-        if self.game.nb_pieces_placed_depart < 2:
+        elif self.game.nb_pieces_placed_depart < 10:
             return self.place_first_piece(screen)
         else:
             if self.placed_second_piece:
                 self.placed_third_piece = self.place_third_piece(screen)
-                if self.placed_third_piece:
-                    self.previous_position = None
+                if self.placed_third_piece and not self.align.align_condition(screen):
+                    self.game.change_player()
                     self.placed_second_piece = False
+                    self.previous_position = None   
+                    return
+                else:
+                    return
             else:
                 self.placed_second_piece, self.previous_position = self.place_second_piece(screen)
         return False
