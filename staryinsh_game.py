@@ -158,12 +158,12 @@ class Game:
         self.display = Display(self,self.width_ratio,self.height_ratio,self.piece_image)
         self.piece= Piece(self,self.width_ratio,self.height_ratio,self.piece_image)
         self.align = Align(self,self.width_ratio,self.height_ratio,self.piece_image)
+        if self.type == "AI":
+            from game_ia import AI
+            ai = AI(self,self.piece,self.display,self.align,self.width_ratio,self.height_ratio,self.piece_image)
         
         self.display.display_piece(screen)
         self.play_music("game")
-        if self.type == "AI":
-            from game_ia import AI
-            ai = AI(self)
         while running:
             for event in pygame.event.get():
                 if event.type == KEYDOWN and event.key == K_ESCAPE:
@@ -191,3 +191,4 @@ def launch_game(mode,type_game):
     game = Game(mode,type_game)
     game.play()
     
+launch_game("blitz","AI")
