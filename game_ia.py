@@ -2,7 +2,22 @@ import pygame
 import random
 
 class AI:
+    '''
+    This class represents the AI player.
+    '''
     def __init__(self, game,piece, display,align, width_ratio, height_ratio, piece_image):
+        '''
+        This function initializes the AI player.
+        
+        params:
+        game: the game object , type: Game
+        display: the display object , type: Display
+        align: the align object , type: Align
+        piece: the piece object , type: Piece
+        width_ratio: the width ratio , type: float
+        height_ratio: the height ratio , type: float
+        piece_image: the image of the piece , type: pygame.Surface
+        '''
         self.game = game
         self.display = display
         self.align = align
@@ -15,6 +30,12 @@ class AI:
         self.previous_position = None
 
     def place_first_piece(self, screen):
+        '''
+        This function places the first piece of the AI player.
+        
+        params:
+        screen: the screen to display the piece on , type: pygame.Surface
+        '''
         while True:
             i, j = random.randint(0, 10), random.randint(0, 10)
             if self.game.board[j][i] == 0:
@@ -26,6 +47,15 @@ class AI:
         pygame.display.flip()
 
     def place_second_piece(self, screen):
+        '''
+        This function places the second piece of the AI player.
+        
+        params:
+        screen: the screen to display the piece on , type: pygame.Surface
+        
+        return:
+        True if the AI player has placed the second piece with the coordinates of the placement
+        '''
         while True:
             i, j = random.randint(0, 10), random.randint(0, 10)
             if self.game.board[j][i] == 2:
@@ -35,6 +65,12 @@ class AI:
                 return True, (i, j)
 
     def place_third_piece(self, screen):
+        '''
+        This function places the third piece of the AI player.
+        
+        params:
+        screen: the screen to display the piece on , type: pygame.Surface
+        '''
         previous_i, previous_j = self.previous_position
         while True:
             i, j = random.randint(0, 10), random.randint(0, 10)
@@ -51,6 +87,12 @@ class AI:
             
             
     def remove_piece(self, screen):
+        '''
+        This function removes a piece from the board.
+        
+        params:
+        screen: the screen to display the piece on , type: pygame.Surface
+        '''
         while True:
             i, j = random.randint(0, 10), random.randint(0, 10)
             if self.game.board[j][i] == 2:
@@ -64,6 +106,15 @@ class AI:
                 return True
             
     def alignment_choice(self,screen):
+        '''
+        This function removes an alignment from the board.
+        
+        params:
+        screen: the screen to display the piece on , type: pygame.Surface
+        
+        return:
+        True if the AI player has removed an alignment
+        '''
         while True:
             random_choice = random.choice(self.game.alignments)
             coor = random.choice(random_choice)
@@ -74,6 +125,15 @@ class AI:
                     return True
 
     def play(self, screen):
+        '''
+        This function plays the AI player.
+        
+        params:
+        screen: the screen to display the piece on , type: pygame.Surface
+        
+        return:
+        True if the AI player has played, False otherwise
+        '''
         if self.game.multialign:
             self.alignment_choice(screen)
             return True

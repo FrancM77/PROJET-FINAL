@@ -4,6 +4,15 @@ import staryinsh_home as menu
 import staryinsh_game as game
 
 def victory_screen(winner,mode,type_game):
+    '''
+    This function displays the victory screen of the game.
+    
+    params:
+    winner: the winner of the game , type: int
+    mode: the mode of the game , type: str
+    type_game: the type of the game , type: str
+    '''
+    
     # Initializing the window
     pygame.init()
     screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h

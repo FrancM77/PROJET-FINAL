@@ -3,6 +3,16 @@ from pygame.locals import *
 import os
 
 def load_images(screen_width, screen_height):
+    '''
+    This function loads the images of the rules and resizes them to fit the screen.
+    
+    params:
+    screen_width: used to resize the images , type: int
+    screen_height: used to resize the images , type: int
+    
+    return:
+    a list of images , type: list
+    '''
     images_folder = 'img_rules'
     image_files = os.listdir(images_folder)
     images = [pygame.image.load(os.path.join(images_folder, img)) for img in image_files]
@@ -10,6 +20,9 @@ def load_images(screen_width, screen_height):
     return images
 
 def rules():
+    '''
+    This function displays the rules of the game.
+    '''
     pygame.init()
     
     screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
