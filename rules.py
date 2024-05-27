@@ -39,11 +39,10 @@ def rules():
 
     running = True
     
-    from staryinsh_home import play_button_sound
+    from staryinsh_home import play_button_sound, menu
     while running:
         for event in pygame.event.get():
             if event.type == KEYDOWN and event.key == K_ESCAPE:
-                from staryinsh_home import menu
                 menu()
                 return
             elif event.type == MOUSEMOTION:

@@ -173,7 +173,7 @@ class Game:
                 if self.player == 2 and self.type == "AI":
                         ai.play(screen)
                 else:
-                    self.display.display_player(screen,space_font)
+                    self.display.display_player(screen)
                     self.hit_box(event, square_size, screen)
                 self.align.align_condition(screen)
                 pygame.display.flip()
@@ -192,4 +192,3 @@ def launch_game(mode,type_game):
     game = Game(mode,type_game)
     game.play()
     
-launch_game("normal","l")

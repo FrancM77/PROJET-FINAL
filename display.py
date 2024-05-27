@@ -68,20 +68,11 @@ class Display:
             self.load_side_img(2,3,1940,(1050-(i*95)),screen)
             
     # end of function which takes care of the pieces on the sides to count the points
-    def display_player(self, screen, font):
-        player1_ship = pygame.image.load('images/pink_ship.png')
-        player2_ship = pygame.image.load('images/green_ship.png')
-        player1_ship = pygame.transform.scale(player1_ship, (550*self.width_ratio, 375*self.height_ratio))
-        player2_ship = pygame.transform.scale(player2_ship, (375*self.width_ratio, 300*self.height_ratio))
-        if self.game.type == "AI":
-            return
-        else:
-            if self.game.player == 1:
-                screen.blit(player1_ship, (10*self.width_ratio, 500*self.height_ratio))
-            else:
-                screen.blit(player2_ship, (1500*self.width_ratio, 500*self.height_ratio))
-            
-                
+    def display_player(self, screen):
+        player1_ship = pygame.transform.scale(pygame.image.load('images/pink_ship.png'), (550*self.width_ratio, 375*self.height_ratio))
+        player2_ship = pygame.transform.scale(pygame.image.load('images/green_ship.png'), (375*self.width_ratio, 300*self.height_ratio))
+        None if self.game.type == "AI" else screen.blit(player1_ship, (10*self.width_ratio, 500*self.height_ratio)) if self.game.player == 1 else screen.blit(player2_ship, (1500*self.width_ratio, 500*self.height_ratio))
+         
             
     #function to load the background
     def load_background(self, screen):
