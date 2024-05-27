@@ -4,6 +4,10 @@ from pygame.locals import *
 pygame.init()
 
 def start():
+    '''
+    This function is the first screen of the game. It displays the start screen and plays the welcome sound.
+    '''
+    
     # Initializing the window
     screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
     screen = pygame.display.set_mode((screen_width, screen_height))

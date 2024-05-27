@@ -6,6 +6,9 @@ from gamemode import GameMode
 pygame.init()
 
 def menu():
+    '''
+    This function displays the main menu of the game. It allows the player to start the game or to read the rules.
+    '''
     # Initializing the window
     screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
     screen = pygame.display.set_mode((screen_width, screen_height))
@@ -68,13 +71,34 @@ def menu():
     pygame.quit()
     
 def hover(img,x,y,screen):
+    '''
+    This function displays the hovered image at the given coordinates.
+    
+    params:
+    img: the image to display , type: pygame.Surface
+    x: the x-coordinate , type: int
+    y: the y-coordinate , type: int
+    screen: the screen to display the image on : type: pygame.Surface
+    '''
     screen.blit(pygame.transform.scale(img, (img.get_width()+3, img.get_height() + 15)), (x, y))
 
 def unhover(img,x,y,screen):
+    '''
+    This function displays the unhovered image at the given coordinates.
+    
+    params:
+    img: the image to display , type: pygame.Surface
+    x: the x-coordinate , type: int
+    y: the y-coordinate , type: int
+    screen: the screen to display the image on , type: pygame.Surface
+    '''
     pygame.time.wait(20)
     screen.blit(img, (x,y))           
 
 
 def play_button_sound():
+    '''
+    This function plays the button sound.
+    '''
     sound = pygame.mixer.Sound(f'sounds/button.mp3')
     sound.play()
