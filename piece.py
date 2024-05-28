@@ -95,6 +95,11 @@ class Piece:
         '''
         previous_i , previous_j = self.game.previous_position
         if x <= event.pos[0] <= x + square_size and y <= event.pos[1] <= y + square_size:
+            if self.any_move(previous_i,previous_j) == False:
+                from victory_screen import victory_screen
+                self.game.change_player()
+                victory_screen(self.game.player, self.game.mode, self.game.type)
+                return False
             i += self.game.recover_offset(j)
             if self.is_valid_move(previous_i, previous_j, i, j) and self.game.board[j][i] == 0:
                 self.flip_pieces(previous_i, previous_j, i, j)
@@ -241,6 +246,19 @@ class Piece:
         else:
             return False
         
+        
+    def any_move(self,i,j):
+        '''
+        This function verifies if there is any move left.
+        
+        return:
+        True if there is a move left else False , type: bool
+        '''
+        for y in range(0,11):
+            for x in range(0,11):
+                if self.game.board[y][x] == 0 and self.is_valid_move(i,j,x,y):
+                    return True
+        return False
 
     def flip_pieces(self, start_x, start_y, end_x, end_y):
         '''
