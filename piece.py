@@ -251,6 +251,10 @@ class Piece:
         '''
         This function verifies if there is any move left.
         
+        params:
+        i: the i-start-coordinate , type: int
+        j: the j-start-coordinate , type: int
+        
         return:
         True if there is a move left else False , type: bool
         '''
