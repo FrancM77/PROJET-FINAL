@@ -16,7 +16,7 @@ class Game:
         
         params:
         mode: choose between "normal" or "blitz" , type : str
-        type_game : choose between "AI" or "player" , type : str
+        type_game : choose between "AI" or "local" , type : str
         '''
         self.board= [['N', 0, 0 ,0 ,0, 'N', 'N' ,'N', 'N' ,'N', 'N'],
                     [0, 0, 0 ,0, 0 ,0 ,0, 'N', 'N' ,'N', 'N'],
