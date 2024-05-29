@@ -107,6 +107,12 @@ class Display:
             self.load_side_img(2,256,1940,(1050-(i*95)),screen)
                     
     def display_side_piece_start(self,screen):
+        '''
+        This function displays the starting pieces on the sides of the board.
+        
+        params:
+        screen: the screen to display the starting pieces on , type: pygame.Surface
+        '''
         for i in range(self.game.nb_circle):
             self.load_side_img(1,2,10,(10+(i*95)),screen)
             self.load_side_img(2,3,1940,(1050-(i*95)),screen)
